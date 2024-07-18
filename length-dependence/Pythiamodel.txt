@@ -1,0 +1,58 @@
+{'training': False, '_parameters': OrderedDict(), '_buffers': OrderedDict(), '_non_persistent_buffers_set': set(), '_backward_pre_hooks': OrderedDict(), '_backward_hooks': OrderedDict(), '_is_full_backward_hook': None, '_forward_hooks': OrderedDict(), '_forward_hooks_with_kwargs': OrderedDict(), '_forward_hooks_always_called': OrderedDict(), '_forward_pre_hooks': OrderedDict(), '_forward_pre_hooks_with_kwargs': OrderedDict(), '_state_dict_hooks': OrderedDict(), '_state_dict_pre_hooks': OrderedDict(), '_load_state_dict_pre_hooks': OrderedDict(), '_load_state_dict_post_hooks': OrderedDict(), '_modules': OrderedDict([('gpt_neox', GPTNeoXModel(
+  (embed_in): Embedding(50304, 1024)
+  (emb_dropout): Dropout(p=0.0, inplace=False)
+  (layers): ModuleList(
+    (0-23): 24 x GPTNeoXLayer(
+      (input_layernorm): LayerNorm((1024,), eps=1e-05, elementwise_affine=True)
+      (post_attention_layernorm): LayerNorm((1024,), eps=1e-05, elementwise_affine=True)
+      (post_attention_dropout): Dropout(p=0.0, inplace=False)
+      (post_mlp_dropout): Dropout(p=0.0, inplace=False)
+      (attention): GPTNeoXAttention(
+        (rotary_emb): GPTNeoXRotaryEmbedding()
+        (query_key_value): Linear(in_features=1024, out_features=3072, bias=True)
+        (dense): Linear(in_features=1024, out_features=1024, bias=True)
+        (attention_dropout): Dropout(p=0.0, inplace=False)
+      )
+      (mlp): GPTNeoXMLP(
+        (dense_h_to_4h): Linear(in_features=1024, out_features=4096, bias=True)
+        (dense_4h_to_h): Linear(in_features=4096, out_features=1024, bias=True)
+        (act): GELUActivation()
+      )
+    )
+  )
+  (final_layer_norm): LayerNorm((1024,), eps=1e-05, elementwise_affine=True)
+)), ('embed_out', Linear(in_features=1024, out_features=50304, bias=False))]), 'config': GPTNeoXConfig {
+  "_name_or_path": "EleutherAI/pythia-410m-deduped",
+  "architectures": [
+    "GPTNeoXForCausalLM"
+  ],
+  "attention_bias": true,
+  "attention_dropout": 0.0,
+  "bos_token_id": 0,
+  "classifier_dropout": 0.1,
+  "eos_token_id": 0,
+  "hidden_act": "gelu",
+  "hidden_dropout": 0.0,
+  "hidden_size": 1024,
+  "initializer_range": 0.02,
+  "intermediate_size": 4096,
+  "layer_norm_eps": 1e-05,
+  "max_position_embeddings": 2048,
+  "model_type": "gpt_neox",
+  "num_attention_heads": 16,
+  "num_hidden_layers": 24,
+  "rope_scaling": null,
+  "rotary_emb_base": 10000,
+  "rotary_pct": 0.25,
+  "tie_word_embeddings": false,
+  "torch_dtype": "float16",
+  "transformers_version": "4.38.2",
+  "use_cache": true,
+  "use_parallel_residual": true,
+  "vocab_size": 50304
+}
+, 'name_or_path': 'EleutherAI/pythia-410m-deduped', 'warnings_issued': {}, 'generation_config': GenerationConfig {
+  "bos_token_id": 0,
+  "eos_token_id": 0
+}
+, '_keep_in_fp32_modules': None, '_is_hf_initialized': True}

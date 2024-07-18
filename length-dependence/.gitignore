@@ -1,0 +1,7 @@
+log_output/
+log_dists/
+log_act/
+results/
+log_opt/
+log_gen
+log_opt_dbg
