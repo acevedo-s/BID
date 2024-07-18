@@ -1,0 +1,53 @@
+{'training': False, '_parameters': OrderedDict(), '_buffers': OrderedDict(), '_non_persistent_buffers_set': set(), '_backward_pre_hooks': OrderedDict(), '_backward_hooks': OrderedDict(), '_is_full_backward_hook': None, '_forward_hooks': OrderedDict(), '_forward_hooks_with_kwargs': OrderedDict(), '_forward_hooks_always_called': OrderedDict(), '_forward_pre_hooks': OrderedDict(), '_forward_pre_hooks_with_kwargs': OrderedDict(), '_state_dict_hooks': OrderedDict(), '_state_dict_pre_hooks': OrderedDict(), '_load_state_dict_pre_hooks': OrderedDict(), '_load_state_dict_post_hooks': OrderedDict(), '_modules': OrderedDict([('decoder', OPTDecoder(
+  (embed_tokens): Embedding(50272, 512, padding_idx=1)
+  (embed_positions): OPTLearnedPositionalEmbedding(2050, 1024)
+  (project_out): Linear(in_features=1024, out_features=512, bias=False)
+  (project_in): Linear(in_features=512, out_features=1024, bias=False)
+  (layers): ModuleList(
+    (0-23): 24 x OPTDecoderLayer(
+      (self_attn): OPTAttention(
+        (k_proj): Linear(in_features=1024, out_features=1024, bias=True)
+        (v_proj): Linear(in_features=1024, out_features=1024, bias=True)
+        (q_proj): Linear(in_features=1024, out_features=1024, bias=True)
+        (out_proj): Linear(in_features=1024, out_features=1024, bias=True)
+      )
+      (activation_fn): ReLU()
+      (self_attn_layer_norm): LayerNorm((1024,), eps=1e-05, elementwise_affine=True)
+      (fc1): Linear(in_features=1024, out_features=4096, bias=True)
+      (fc2): Linear(in_features=4096, out_features=1024, bias=True)
+      (final_layer_norm): LayerNorm((1024,), eps=1e-05, elementwise_affine=True)
+    )
+  )
+))]), 'config': OPTConfig {
+  "_name_or_path": "facebook/opt-350m",
+  "_remove_final_layer_norm": false,
+  "activation_dropout": 0.0,
+  "activation_function": "relu",
+  "architectures": [
+    "OPTForCausalLM"
+  ],
+  "attention_dropout": 0.0,
+  "bos_token_id": 2,
+  "do_layer_norm_before": false,
+  "dropout": 0.1,
+  "enable_bias": true,
+  "eos_token_id": 2,
+  "ffn_dim": 4096,
+  "hidden_size": 1024,
+  "init_std": 0.02,
+  "layer_norm_elementwise_affine": true,
+  "layerdrop": 0.0,
+  "max_position_embeddings": 2048,
+  "model_type": "opt",
+  "num_attention_heads": 16,
+  "num_hidden_layers": 24,
+  "output_hidden_states": true,
+  "pad_token_id": 1,
+  "prefix": "</s>",
+  "torch_dtype": "float16",
+  "transformers_version": "4.38.2",
+  "use_cache": true,
+  "vocab_size": 50272,
+  "word_embed_proj_dim": 512
+}
+, 'name_or_path': 'facebook/opt-350m', 'warnings_issued': {}, 'generation_config': None, '_keep_in_fp32_modules': None, '_is_hf_initialized': True, 'hf_device_map': {'decoder': 'cpu'}}
