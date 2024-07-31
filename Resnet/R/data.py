@@ -79,18 +79,18 @@ def format_torch(filename,
 
     if normalize==0:
       preprocess = transforms.Compose([
-        transforms.Resize(256),
+        transforms.Resize(256,antialias=None),
         transforms.CenterCrop(crop_size),
         transforms.ToTensor(),
-        transforms.Resize(224), # we fix the size to this size, for every crop
+        transforms.Resize(224,antialias=None), # we fix the size to this size, for every crop
       ])      
     elif normalize==1:
       preprocess = transforms.Compose([
-        transforms.Resize(256),
+        transforms.Resize(256,antialias=None),
         transforms.CenterCrop(crop_size),
         transforms.ToTensor(),
         transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
-        transforms.Resize(224), # we fix the size to this size, for every crop
+        transforms.Resize(224,antialias=None), # we fix the size to this size, for every crop
       ])  
     input_tensor = preprocess(input_image)
 

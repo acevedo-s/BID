@@ -1,14 +1,25 @@
 #!/bin/bash
 
-crop_step=28
-resize=0
-for (( i=1; i<=8; i++ ))
+mkdir -p log_dist
+
+resize=1
+export resize
+
+crop_step=28         # because 224 / 8 = 28
+mincrop_index=1      # minimum crop index:1
+maxcrop_index=8      # maximum crop index:8
+layer_ids=({0..7})   # maximum layer index:7 (previous to flatten)
+class_ids=({0..6})   # maximum class index:6
+
+for layer_id in "${layer_ids[@]}"
 do
-  # crop_size=$((14+28*$i))
-  crop_size=$(($crop_step*$i))
-  job=$(sbatch sdistances.sh $crop_size $resize)
-  # job=$(sbatch shuffsdistances.sh $crop_size $resize)
-  echo $job
-  echo crop_size:$crop_size
-  sleep .2
+  for class_id in "${class_ids[@]}"
+  do
+    for (( crop_index=mincrop_index; crop_index<=maxcrop_index; crop_index++ ))
+    do
+      crop_size=$((crop_step*crop_index))
+      sbatch sdistances.sh $crop_size $class_id $layer_id
+      echo crop_size:$crop_size class_id:$class_id layer_id:$layer_id
+    done
+  done
 done

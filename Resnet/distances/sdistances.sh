@@ -5,11 +5,13 @@
 #SBATCH --time=12:00:00
 #SBATCH --mem=40G
 #SBATCH --partition=regular2,regular1
-#SBATCH --array=0-8 # for layers
+# SBATCH --array=0-0 # 8 # for layers
 # SBATCH --qos=fastlane # for debugging
 #SBATCH --output=./log_dist/%x.o%j              # Standard output
 #SBATCH --error=./log_dist/%x.o%j               # Standard error
 
 crop_size=$1
-resize=$2
-python3 -u distances.py $crop_size $resize
+class_id=$2
+layer_id=$3
+
+python3 -u distances.py $crop_size $class_id $layer_id

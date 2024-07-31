@@ -18,11 +18,11 @@ layers_dict['resnet18'] = [
                           'layer1.0.relu_1',
                           'layer1.1.relu_1',
                           'layer2.0.relu_1',
-                          'layer2.1.relu_1',
+                          'layer2.1.relu_1',            #3, ID peak layer-wise
                           'layer3.0.relu_1',
                           'layer3.1.relu_1',
                           'layer4.0.relu_1',
-                          'layer4.1.relu_1',
+                          'layer4.1.relu_1',            #7
                           'flatten',
                           ]
 
