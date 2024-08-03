@@ -1,8 +1,7 @@
-from dadapy import Hamming
-from parameters import * 
 import numpy as np
+from parameters import * 
+from dadapy import Hamming
 from dadapy._utils.stochastic_minimization_hamming import *
-from R.relative_depth import * 
 
 alphamin = float(sys.argv[4])
 alphamax = float(sys.argv[5])
@@ -17,19 +16,13 @@ Ns,N = np.genfromtxt(EDfile,
                     unpack=True).astype(int)
 print(f'{N=},{Ns=}')
 
-
-""" For homogeneity I divided the "patches" dataset in 7 equivalent subgroups with
- ~ 1200 samples each, since we were using 7 classes with ~ 1200 data points each"""
-try:
-  r_id = int(os.environ['SLURM_ARRAY_TASK_ID'])
-except:
-  r_id = int(sys.argv[6])
-
 H = Hamming()
-H.D_histogram(
-  r_id=r_id,
-  resultsfolder=histfolder,
-)
+H.D_histogram(Ns=Ns,
+              resultsfolder=histfolder)
+H.compute_moments()
+# print(f'{H.D_values=}')
+# print(f'{H.D_mu_emp=}')
+# print(f'{H.D_var_emp=}')
 
 B = BID(H,
         alphamin=alphamin,

@@ -20,4 +20,4 @@ class_id=$3
 alphamin=$4
 alphamax=$5
 
-python3 -u classoptimize.py "$crop_size" "$layer_id" "$class_id" "$alphamin" "$alphamax"
+python3 -u optimize.py "$crop_size" "$layer_id" "$class_id" "$alphamin" "$alphamax"

@@ -17,3 +17,5 @@ def get_EDfilename(distance_folder,model_name,layer_name,key):
 def get_optfolder(optimization_folder,model_name,crop_size,key,layer_name):
   optfolder = f'{optimization_folder}/results/opt/{model_name}/crop_size{crop_size}/class{key}/layer_name{layer_name}/'
   return optfolder
+
+shuffled_afolder = f'/scratch/sacevedo/Imagenet2012/shuffled/'

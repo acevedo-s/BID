@@ -2,17 +2,10 @@
 
 mkdir -p log_opt
 
-# layer_ids=({2..7})   # maximum layer index:7 (previous to flatten)
-# mincrop_index=1      # minimum crop index:1
-# maxcrop_index=8      # maximum crop index:8
-# class_ids=({2..6})   # maximum class index:6
-# alphamins=(0.01)
-# alphamaxs=(0.1 0.2 0.3 0.4 0.5)
-
-layer_ids=({0..1})   # maximum layer index:7 (previous to flatten)
-mincrop_index=1      # minimum crop index:1
+layer_ids=({7..7})   # maximum layer index:7 (previous to flatten)
+mincrop_index=4      # minimum crop index:1
 maxcrop_index=8      # maximum crop index:8
-class_ids=({2..6})   # maximum class index:6
+class_ids=({-1..-1})   # maximum class index:6
 alphamins=(0.01)
 alphamaxs=(0.1 0.2 0.3 0.4 0.5)
 
@@ -27,7 +20,11 @@ do
         for (( crop_index=mincrop_index; crop_index<=maxcrop_index; crop_index++ ))
         do
           crop_size=$((28*crop_index))
-          sbatch sclassoptimize.sh $crop_size $layer_id $class_id $alphamin $alphamax
+          if [ "$class_id" -eq -1 ]; then
+              sbatch sshuffoptimize.sh "$crop_size" "$layer_id" "$class_id" "$alphamin" "$alphamax"
+          else
+              sbatch soptimize.sh "$crop_size" "$layer_id" "$class_id" "$alphamin" "$alphamax"
+          fi
           echo crop_size:$crop_size,layer_id:$layer_id,class_id:$class_id,alphamax:$alphamax,alphamin:$alphamin
           sleep .01
         done

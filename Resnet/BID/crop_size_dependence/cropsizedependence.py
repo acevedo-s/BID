@@ -11,7 +11,6 @@ from R.relative_depth import *
 from R.paths import *
 
 
-
 rcpsize = 20
 plt.rcParams['xtick.labelsize']= rcpsize
 plt.rcParams['ytick.labelsize']=rcpsize
@@ -32,7 +31,8 @@ plot_id = 0
 
 crop_step = 28
 crop_sizes = np.array([crop_step*i for i in range(1,8+1)])
-figsfolder = f'results/figs/ImageNet/BID/'
+max_crop = crop_sizes[-1]
+figsfolder = f'results/figs/ImageNet/'
 BIDfolder = f'results/ImageNet/'
 distance_folder = "../../distances"
 optimization_folder = '../optimize'
@@ -55,28 +55,24 @@ layer_names = layers_dict[model_name]
 #selected layers:
 # indices = range(0,8)
 indices = [0,2,3,5,7]
-indices = [0,1]
+# indices = [0,1]
 layer_names = [layer_names[idx] for idx in indices]
 relative_depth_dict[model_name] = [relative_depth_dict[model_name][idx] for idx in indices]
 
-nc = 2
 class_list = list(class_dict.keys())
 # class_list = class_list[nc:nc+1]
-class_list = class_list[:nc]
+class_list = class_list[:]
 
 figKL,axKL = plt.subplots(1)
 fig0,ax0 = plt.subplots(1)
 fig1,ax1 = plt.subplots(1)
 
-
-alphamin_list = np.array([0.01])
-alphamax_list = np.array([0.2])
+alphamin = float(sys.argv[1]) # 0.01
+alphamax = float(sys.argv[2]) # 0.1, ,...,0.5
 
 d0_list = np.zeros(shape=(len(class_list),
                           len(layer_names),
                           len(crop_sizes),
-                          len(alphamin_list),
-                          len(alphamax_list),
                           )
                   )
 d1_list = np.zeros(shape=d0_list.shape)
@@ -96,25 +92,23 @@ for class_id,key in enumerate(class_list):
       Ns,N = np.genfromtxt(EDfile,
                     dtype='str',
                     unpack=True).astype(int)
-      for alphamin_id,alphamin in enumerate(alphamin_list):
-        for alphamax_id,alphamax in enumerate(alphamax_list):
-          H = Hamming()
-          H.D_histogram(
-                        Ns=Ns,
-                        resultsfolder=histfolder,
-                        )
-          B = BID(H,
-                  alphamin=alphamin,
-                  alphamax=alphamax,
-                  seed=seed,
-                  delta=delta,
-                  Nsteps=Nsteps,
-                  optfolder0=optfolder0,
-                  )
-        (rmax_list[class_id,layer_id,crop_id,alphamin_id,alphamax_id],
-        d0_list[class_id,layer_id,crop_id,alphamin_id,alphamax_id],
-        d1_list[class_id,layer_id,crop_id,alphamin_id,alphamax_id],
-        logKL_list[class_id,layer_id,crop_id,alphamin_id,alphamax_id]) = B.load_results()
+      H = Hamming()
+      H.D_histogram(
+                    Ns=Ns,
+                    resultsfolder=histfolder,
+                    )
+      B = BID(H,
+              alphamin=alphamin,
+              alphamax=alphamax,
+              seed=seed,
+              delta=delta,
+              Nsteps=Nsteps,
+              optfolder0=optfolder0,
+              )
+      (rmax_list[class_id,layer_id,crop_id],
+      d0_list[class_id,layer_id,crop_id],
+      d1_list[class_id,layer_id,crop_id],
+      logKL_list[class_id,layer_id,crop_id]) = B.load_results()
 
 mu_d0 = np.nanmean(d0_list,axis=0)
 std_d0 = np.nanstd(d0_list,axis=0)
@@ -124,36 +118,25 @@ mu_logKL = np.nanmean(logKL_list,axis=0)
 std_logKL = np.nanstd(logKL_list,axis=0)
 
 
-alphamin_id = 0
-alphamax_id = 0
 for layer_id,layer_name in enumerate(layer_names):
   lbl = r'$l/L_R=$' + f'{relative_depth_dict[model_name][layer_id]:.2f}'
-  ax0.plot(crop_sizes**2,
-            mu_d0[layer_id,:,alphamin_id,alphamax_id],
+  ax0.plot(crop_sizes**2 / max_crop**2,
+            mu_d0[layer_id,:],
             'o-',
-            # marker=markers[plot_id],
-            # edgecolor='black',
-            # label=f'{layer_name}',
             label=lbl,
             color=colors[plot_id%len(colors)],
-            )
-  np.savetxt(fname=f'{BIDfolder}{layer_name}',
-             X=np.transpose([crop_sizes**2,
-                             mu_d0[layer_id,:,alphamin_id,alphamax_id],
-                             mu_d1[layer_id,:,alphamin_id,alphamax_id]]
-                            ),
-            )
-  ax1.plot(crop_sizes**2,
-            mu_d1[layer_id,:,alphamin_id,alphamax_id],
+  )
+  ax1.plot(crop_sizes**2 / max_crop**2, 
+            mu_d1[layer_id,:],
             '-o',
             # marker=markers[plot_id],
             # edgecolor='black',
             # label=f'{layer_name}',
             label=lbl,
             color=colors[plot_id%len(colors)],
-            )
-  axKL.plot(crop_sizes**2,
-            mu_logKL[layer_id,:,alphamin_id,alphamax_id],
+  )
+  axKL.plot(crop_sizes**2 / max_crop**2,
+            mu_logKL[layer_id,:],
             # marker=markers[plot_id],
             # edgecolor='black',
             # label=f'{layer_name}',
@@ -161,22 +144,29 @@ for layer_id,layer_name in enumerate(layer_names):
             color=colors[plot_id%len(colors)],
             )
   plot_id += 1
+  np.savetxt(fname=f'{BIDfolder}/{layer_name}_alphamax{alphamax:.5f}.txt',
+             X=np.transpose([crop_sizes**2 / max_crop**2,
+                             mu_d0[layer_id,:],
+                             std_d0[layer_id,:]
+                             ]
+                            )
+  )
 
 
 ax0.set_ylabel(r'BID')
 box = ax0.get_position()
 ax0.set_position([box.x0, box.y0, box.width * 0.8, box.height])
 ax0.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-fig0.savefig(figsfolder + f'd0_crop.pdf',bbox_inches='tight')
+fig0.savefig(figsfolder + f'd0_crop_{alphamax:.5f}.pdf',bbox_inches='tight')
 
 ax1.set_ylabel(r'BID')
 box = ax1.get_position()
 ax1.set_position([box.x0, box.y0, box.width * 0.8, box.height])
 ax1.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-fig1.savefig(figsfolder + f'd1_crop.pdf',bbox_inches='tight')
+fig1.savefig(figsfolder + f'd1_crop_{alphamax:.5f}.pdf',bbox_inches='tight')
 
 axKL.set_ylabel(r'BID')
 box = axKL.get_position()
 axKL.set_position([box.x0, box.y0, box.width * 0.8, box.height])
 axKL.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-figKL.savefig(figsfolder + f'KL_crop.pdf',bbox_inches='tight')
+figKL.savefig(figsfolder + f'KL_crop_{alphamax:.5f}.pdf',bbox_inches='tight')

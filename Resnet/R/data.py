@@ -260,11 +260,11 @@ def shuffled_format_resize(X, #pytorch tensor
     elif normalize==1:
       preprocess = transforms.Compose([
         transforms.Resize(256),
-        transforms.CenterCrop(crop_size,
-                              # antialias=False, # to work on tensors
-                              ),
+        transforms.CenterCrop(crop_size,),
         transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
-        transforms.Resize(224), # we fix the size to this size, for every crop
+        transforms.Resize(224,
+                          antialias=False, # to work on tensors
+                          ), # we fix the size to this size, for every crop
       ])  
     input_tensor = preprocess(X)
 

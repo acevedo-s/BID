@@ -1,9 +1,9 @@
 #!/bin/bash
 
 crop_step=28          # full image size: 224*224. note that 28 = 224 / 8 
-mincrop_index=8
+mincrop_index=1
 maxcrop_index=8
-class_ids=({0..0})
+class_ids=({-1..-1})  # -1 for shuffled
 
 mkdir -p log_a
 
@@ -14,8 +14,6 @@ do
     crop_size=$((crop_step*crop_index))
     echo crop_size:$crop_size, class_id:$class_id
     sbatch sactivations.sh $crop_size $class_id
-    # sbatch sshuffactivations.sh $crop_size $class_id
-    # # echo $job
-    # sleep .01
+    sleep .01
   done
 done

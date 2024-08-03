@@ -11,4 +11,9 @@
 
 crop_size=$1
 class_id=$2
-python3 -u compute_activations.py $crop_size $class_id
+
+if [ "$class_id" -eq -1 ]; then
+    python3 -u shuffled_activations.py $crop_size $class_id
+else
+    python3 -u compute_activations.py $crop_size $class_id
+fi

@@ -7,9 +7,9 @@ export resize
 
 crop_step=28         # because 224 / 8 = 28
 mincrop_index=1      # minimum crop index:1
-maxcrop_index=8      # maximum crop index:8
+maxcrop_index=1      # maximum crop index:8
 layer_ids=({0..7})   # maximum layer index:7 (previous to flatten)
-class_ids=({0..6})   # maximum class index:6
+class_ids=({-1..-1})   # maximum class index:6
 
 for layer_id in "${layer_ids[@]}"
 do
