@@ -205,3 +205,12 @@ def get_sigmas_filename(sigmasfolder0,
   sigmasfolder = f'{sigmasfolder0}sub_length{sublength_cutoff:d}/'
   os.makedirs(sigmasfolder,exist_ok=True)
   return f'{sigmasfolder}sigmas_l{l_id}_T{t}.npy'
+
+def get_angles_filename(anglesfolder0,
+                        t,
+                        tau,
+                        layer_id):
+  anglesfolder = anglesfolder0 + f't{t}/layer_id{layer_id}/'
+  os.makedirs(anglesfolder,exist_ok=True)
+  angles_filename = anglesfolder + f'tau{tau}.txt'
+  return angles_filename

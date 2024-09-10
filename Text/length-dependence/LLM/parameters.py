@@ -3,7 +3,7 @@ import numpy as np
 
 ### HYPERPARAMETERS
 Ntokens = 0 # 0 means to take all the tokens in the data sample.
-sublength_cutoff = 10 # tokens cutoff for GPU space constraint
+sublength_cutoff = 300 # tokens cutoff for GPU space constraint
 # layer_ids = range(25) 
 layer_ids = [0,24] # there are 25 for OPT ~300M and also for Pythia
 
@@ -15,7 +15,7 @@ randomize = int(sys.argv[3])
 print(f'{randomize=}')
 batch_randomize = int(sys.argv[4])
 print(f'{batch_randomize=}')
-Nbits = int(sys.argv[5]) # 1 for sign binarization, 2 for alternative binarization
+Nbits = int(sys.argv[5]) # 0 for real-valued activations # 1 for sign binarization, 2 for alternative binarization
 print(f'{Nbits=}')
 
 if LLM == 'OPT':
@@ -119,3 +119,8 @@ if batch_randomize:
 # if batch_randomize:
 #   cdf_actfolder += f'Lconcat{Lconcat}/'
 # cdf_actfolder += f'Nbits{Nbits}/'
+
+### ANGLES
+anglesfolder0 = wd + path0 + f'{corpus}/{LLM}/angles/'
+if batch_randomize:
+  anglesfolder0 += f'Lconcat{Lconcat}/'
