@@ -126,3 +126,5 @@ if batch_randomize:
   anglesfolder0 += f'Lconcat{Lconcat}/'
 
 signfolder0 = wd + path0 + f'{corpus}/{LLM}/sign/'
+if batch_randomize:
+  signfolder0 += f'Lconcat{Lconcat}/'

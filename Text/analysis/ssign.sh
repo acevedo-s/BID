@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH -A Sis24_laio
 #SBATCH -p boost_usr_prod
-#SBATCH --job-name=LLM-dists
+#SBATCH --job-name=sign
 #SBATCH --qos=boost_qos_dbg 
 #SBATCH --time 00:30:00
 # SBATCH --qos=normal
@@ -9,9 +9,8 @@
 #SBATCH -N 1
 #SBATCH --ntasks-per-node=1
 #SBATCH --mem=100G
-#SBATCH --array=1-1 # 10-30:2 
-#SBATCH --output=./log_dists/%x.o%A-%a
-#SBATCH --error=./log_dists/%x.o%A-%a
+#SBATCH --output=./log_sign/%x.o%j
+#SBATCH --error=./log_sign/%x.o%j
 
 LLM=$1
 corpus=$2
@@ -19,8 +18,9 @@ randomize=$3
 batch_randomize=$4
 Nbits=$5
 layer_id=$6
+N_batches=$7
 
-python3 -u LLM/sign.py "$LLM" "$corpus" "$randomize" "$batch_randomize" "$Nbits" "$layer_id"
+python3 -u LLM/sign.py "$LLM" "$corpus" "$randomize" "$batch_randomize" "$Nbits" "$layer_id" "$N_batches"
 
 # for JAX:
 # export MPI4JAX_USE_CUDA_MPI=1
