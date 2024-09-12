@@ -82,11 +82,6 @@ if log_scale:
 title = f'{corpus}'
 ax.set_title(title)
 
-ax.vlines(150,
-          ax.get_ylim()[0],
-          ax.get_ylim()[1],
-          color='gray',
-          linestyles='dashed')
 ax.set_xlim(sub_lengths[0]-5,
             sub_lengths[-1]+10,
             )
