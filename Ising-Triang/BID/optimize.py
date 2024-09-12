@@ -39,5 +39,6 @@ B = BID(H,
         delta=delta,
         Nsteps=Nsteps,
         optfolder0=optfolder0,
+        L=L**2, # number of bits...
         )
 B.computeBID()

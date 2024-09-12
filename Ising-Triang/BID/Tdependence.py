@@ -1,6 +1,7 @@
 import sys,os
 import matplotlib.pyplot as plt
 import numpy as np
+os.environ["JAX_ENABLE_X64"] = "True"
 from dadapy._utils.stochastic_minimization_hamming import BID
 
 rcpsize = 20
@@ -40,7 +41,7 @@ L_list = np.array([60,80,100])
 N_list = L_list**2
 
 alphamin = 0 # order of quantile for P(r)
-alphamax = .05 #5E-3
+alphamax = .1 #5E-3
 Nsteps = int(1E6)
 delta = 5E-4
 seed = 1
