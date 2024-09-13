@@ -39,14 +39,14 @@ if batch_randomize:
   signfolder0 += f'Lconcat{Lconcat}/'
 
 batch_size = 100
-Ns_list = np.array([30]) * batch_size
+Ns_list = np.array([60]) * batch_size
 fig,ax = plt.subplots(1)
 neighbour = 1
 norm_flag = int(sys.argv[1])
 for layer_id_aux,layer_id in enumerate(layer_ids):
   for Ns_id,Ns in enumerate(Ns_list):
     resultsfolder = signfolder0 + f'/layer{layer_id}/Ns{Ns}/neighbour{neighbour}/'
-    lbl=r'$N_s=$'f'{Ns},{layer_id=}'
+    lbl=r'$N_s=$'f'{Ns},layer {layer_id}'
     R,NR = np.loadtxt(fname=f'{resultsfolder}/ranks.txt',unpack=True)
     R += 1 # lets start the ranks in 1...
     if norm_flag == 1:
