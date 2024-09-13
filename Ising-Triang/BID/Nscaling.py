@@ -1,6 +1,7 @@
 import sys,os
 import matplotlib.pyplot as plt
 import numpy as np
+os.environ["JAX_ENABLE_X64"] = "True"
 from dadapy._utils.stochastic_minimization_hamming import BID
 from scipy.optimize import curve_fit
 
@@ -33,14 +34,14 @@ os.makedirs(figsfolder,exist_ok=True)
 eps = 1E-7
 
 fig,ax = plt.subplots(1)
-# L_list = np.array([40,50,60,70,80,90,100])
-L_list = np.array([30,40,50,60,70,80,90,100])
+L_list = np.array([60,80,100])
+# L_list = np.array([30,40,50,60,70,80,90,100])
 N_list = L_list**2
 # T_list = np.flip(np.array([.1,.3,.5,.7,1]))
 T_list = np.flip(np.array([.1,.6,.8,1]))
 
 alphamin = 0 # order of quantile for P(r)
-alphamax = .05 #5E-3
+alphamax = .5 #5E-3
 Nsteps = int(1E6)
 seed = 1
 delta = 5E-4
