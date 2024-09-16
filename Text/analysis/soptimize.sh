@@ -9,7 +9,7 @@
 #SBATCH -N 1
 #SBATCH --ntasks-per-node=1
 #SBATCH --mem=12G
-#SBATCH --array=10-30:2 #before was 8-30:2
+#SBATCH --array=10-20:2 #before was 8-30:2
 #SBATCH --output=./log_opt/%x.o%A-%a
 #SBATCH --error=./log_opt/%x.o%A-%a
 

@@ -4,14 +4,9 @@ from dadapy import Data
 os.environ["JAX_ENABLE_X64"] = "True"
 from dadapy.hamming import Hamming
 from time import time
-from numba import jit 
 start = time()
 
-@jit  # nopython=True forces compilation into machine code
-def poor_mans_layer_norm(a,N_batches,batch_size,layer_mean,layer_std):
-  for sample_idx in range(N_batches * batch_size):
-    a[sample_idx,:] = (a[sample_idx,:] - layer_mean[sample_idx]) / layer_std[sample_idx] 
-  return a
+
 
 eps = 1E-7
 act_outputfolder = act_outputfolder0 + f'sub_length{sublength_cutoff:d}/'
@@ -30,11 +25,16 @@ a = load_activations(N_batches,
                     Ntokens).numpy()
 B,T,E = a.shape
 a  = np.reshape(a,(B,T*E))
-
+print(f'{a=}')
 if layer_id == 0:
   layer_mean = np.mean(a,axis=1)
   layer_std = np.sqrt(np.var(a,axis=1)+ eps)
+  print(f'{layer_mean=}')
+  print(f'{layer_std=}')
+  print(f'applying poor mans layer norm')
   a = poor_mans_layer_norm(a,N_batches,batch_size,layer_mean,layer_std)
+  print(f'{a=}')
+
 
 data = Data(coordinates=a,maxk=np.max(neighbours))
 data.compute_distances(maxk=np.max(neighbours))

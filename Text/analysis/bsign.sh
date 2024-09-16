@@ -7,9 +7,9 @@ corpus="Wikitext"
 batch_randomize=0
 randomize=0
 Nbits=1
-l_list=(0) # check that this is a subset of "layer_ids" in parameters...
+l_list=(0 24) # check that this is a subset of "layer_ids" in parameters...
 N_batches_list=(1)
-N_batches_list+=({30..60..10})
+N_batches_list+=({10..10..10})
 
 for N_batches in "${N_batches_list[@]}"
 do

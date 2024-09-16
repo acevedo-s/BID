@@ -106,6 +106,7 @@ binarization(
             sublength_cutoff,
             layer_ids,
             N_batches,
+            batch_size,
             act_outputfolder,
             LLM,
             Ntokens,

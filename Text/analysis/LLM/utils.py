@@ -3,6 +3,15 @@ import os
 from time import time
 import matplotlib.pyplot as plt
 import numpy as np 
+from numba import jit 
+
+eps = 1E-7
+
+@jit
+def poor_mans_layer_norm(a,N_batches,batch_size,layer_mean,layer_std):
+  for sample_idx in range(N_batches * batch_size):
+    a[sample_idx] = (a[sample_idx] - layer_mean[sample_idx]) / layer_std[sample_idx] 
+  return a
 
 def batch_shuffle(x, Lconcat, seed=1):
   torch.manual_seed(seed)
@@ -45,13 +54,13 @@ def batch_shuffle(x, Lconcat, seed=1):
 
 def load_activations(N_batches,
                      act_outputfolder,
-                     l_id,
+                     layer_id,
                      LLM,
                      Ntokens,
                      ):
   start = time()
   for batch_id in range(N_batches):
-    a_filename = f'{act_outputfolder}b{batch_id}_l{l_id}.pt'
+    a_filename = f'{act_outputfolder}b{batch_id}_l{layer_id}.pt'
     if batch_id == 0:
       a = torch.load(a_filename,map_location=torch.device('cpu'))
     else:
@@ -77,21 +86,27 @@ def binarization(
                 sublength_cutoff,
                 layer_ids,
                 N_batches,
+                batch_size,
                 act_outputfolder,
                 LLM,
                 Ntokens,
                 remove_activations,
                 Nbits,
                 ):
-  for l_id in layer_ids:
-    print(f'{l_id=:d}')
+  for layer_id in layer_ids:
+    print(f'{layer_id=:d}')
     a = load_activations(N_batches,
                         act_outputfolder,
-                        l_id,
+                        layer_id,
                         LLM,
                         Ntokens).numpy()
     B,T,E, = a.shape
     
+    if layer_id == 0:
+      layer_mean = np.mean(a,axis=(1,2))
+      layer_std = np.sqrt(np.var(a,axis=(1,2))+ eps)
+      a = poor_mans_layer_norm(a,N_batches,batch_size,layer_mean,layer_std)
+
     start = time()
     spins_batch = None
     if Nbits==2:
@@ -107,7 +122,7 @@ def binarization(
       print(f'{t=}')
       sigmas_filename = get_sigmas_filename(sigmasfolder0,
                                             sublength_cutoff,
-                                            l_id,
+                                            layer_id,
                                             t)
       for b in range(B):
         spins_batch = _binarization(a,a_mean,a_std,b,t,spins_batch)
@@ -118,7 +133,7 @@ def binarization(
     if remove_activations:
       print(f'update code here to remove activations if wanted...')
       # for batch_id in range(N_batches):
-      #   a_filename = f'{act_outputfolder}b{batch_id}_l{l_id}.pt'
+      #   a_filename = f'{act_outputfolder}b{batch_id}_l{layer_id}.pt'
       #   os.system(f'rm -f {a_filename}')
 
 def _2_bit_binarization(a,a_mean,a_std,b,t,spins_batch):
@@ -179,13 +194,13 @@ def _sign_binarization(a,a_mean,a_std,b,t,spins_batch):
 
 def load_sigmas(sigmasfolder0,
                 sublength_cutoff,
-                l_id,
+                layer_id,
                 T,
                 ):
   for t in range(T):
     sigmas_filename = get_sigmas_filename(sigmasfolder0,
                                           sublength_cutoff,
-                                          l_id,
+                                          layer_id,
                                           t)
     spins_batch = np.load(sigmas_filename)
     # print(f'{spins_batch.shape=}')
@@ -200,11 +215,11 @@ def load_sigmas(sigmasfolder0,
 
 def get_sigmas_filename(sigmasfolder0,
                         sublength_cutoff,
-                        l_id,
+                        layer_id,
                         t):
   sigmasfolder = f'{sigmasfolder0}sub_length{sublength_cutoff:d}/'
   os.makedirs(sigmasfolder,exist_ok=True)
-  return f'{sigmasfolder}sigmas_l{l_id}_T{t}.npy'
+  return f'{sigmasfolder}sigmas_l{layer_id}_T{t}.npy'
 
 def get_angles_filename(anglesfolder0,
                         t,

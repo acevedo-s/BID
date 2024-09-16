@@ -20,8 +20,9 @@ alphamin_id = int(sys.argv[8])
 print(f'{alphamin_id=}')
 
 # alphamax_list = np.flip(np.linspace(.15,.7,15))
-alphamax_list = np.arange(.15,.95+eps,.05)
-alphamin_list = np.array([1E-5,1E-1])
+# alphamax_list = np.arange(.15,.95+eps,.05)
+alphamax_list = np.array([.7])
+alphamin_list = np.array([1E-5])#,1E-1])
 print(f'{alphamax_list=}')
 print(f'{alphamin_list=}')
 

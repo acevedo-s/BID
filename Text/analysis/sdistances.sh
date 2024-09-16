@@ -2,14 +2,14 @@
 #SBATCH -A Sis24_laio
 #SBATCH -p boost_usr_prod
 #SBATCH --job-name=LLM-dists
-#SBATCH --qos=boost_qos_dbg 
-#SBATCH --time 00:30:00
-# SBATCH --qos=normal
-# SBATCH --time 24:00:00
+# SBATCH --qos=boost_qos_dbg 
+# SBATCH --time 00:30:00
+#SBATCH --qos=normal
+#SBATCH --time 24:00:00
 #SBATCH -N 1
 #SBATCH --ntasks-per-node=1
 #SBATCH --mem=100G
-#SBATCH --array=1-1 # 10-30:2 
+#SBATCH --array=10-30:2 
 #SBATCH --output=./log_dists/%x.o%A-%a
 #SBATCH --error=./log_dists/%x.o%A-%a
 

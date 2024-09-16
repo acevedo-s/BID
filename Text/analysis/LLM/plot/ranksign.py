@@ -46,7 +46,7 @@ norm_flag = int(sys.argv[1])
 for layer_id_aux,layer_id in enumerate(layer_ids):
   for Ns_id,Ns in enumerate(Ns_list):
     resultsfolder = signfolder0 + f'/layer{layer_id}/Ns{Ns}/neighbour{neighbour}/'
-    lbl=r'$N_s=$'f'{Ns},layer {layer_id}'
+    lbl=f'layer {layer_id}'
     R,NR = np.loadtxt(fname=f'{resultsfolder}/ranks.txt',unpack=True)
     R += 1 # lets start the ranks in 1...
     if norm_flag == 1:
@@ -64,7 +64,7 @@ for layer_id_aux,layer_id in enumerate(layer_ids):
 # ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
 # ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
 ax.legend()
-# ax.set_yscale('log')
+ax.set_yscale('log')
 ax.set_xscale('log')
 ax.set_ylabel(f'Probability(Rank)')
 
