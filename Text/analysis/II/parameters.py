@@ -1,6 +1,9 @@
 import sys,os
 import numpy as np
 
+###TODO: agregar layer_id al path de los ranks.
+
+
 ### HYPERPARAMETERS
 Ntokens = 0 # 0 means to take all the tokens in the data sample.
 sublength_cutoff = 300 # tokens cutoff for GPU space constraint
@@ -11,12 +14,17 @@ LLM = sys.argv[1]
 print(f'{LLM=}')
 corpus = sys.argv[2]
 print(f'{corpus=}')
-randomize = int(sys.argv[3])
+randomize = 0 #int(sys.argv[3])
 print(f'{randomize=}')
-batch_randomize = int(sys.argv[4])
+batch_randomize = 0 #int(sys.argv[4])
 print(f'{batch_randomize=}')
-Nbits = int(sys.argv[5]) # 0 for real-valued activations # 1 for sign binarization, 2 for alternative binarization
+Nbits = 1 #int(sys.argv[5]) # 0 for real-valued activations # 1 for sign binarization, 2 for alternative binarization
 print(f'{Nbits=}')
+layer_id = int(sys.argv[3])
+print(f'{layer_id=}')
+assert layer_id in layer_ids
+sub_length = int(sys.argv[4])
+print(f'{sub_length=}')
 
 if LLM == 'OPT':
   max_length = 401
@@ -50,7 +58,7 @@ remove_activations = 0
 print(f'{remove_activations=}')
 batch_size = 100
 if sublength_cutoff == 300:
-  N_batches = None
+  N_batches = 5
 elif sublength_cutoff == 10:
   N_batches = 2
 
@@ -79,52 +87,15 @@ if Nbits > 1:
 
 ### DISTANCES 
 remove_spins = 0
-histfolder = f'results/{corpus}/{LLM}/hist/'
+distfolder = f'results/{corpus}/{LLM}/dists/layer_id{layer_id}/'
+
 if randomize:
-  histfolder += f'randomize/'
+  distfolder += f'randomize/'
 if Ntokens != 0:
-  histfolder += f'Ntokens{Ntokens}/'
+  distfolder += f'Ntokens{Ntokens}/'
 if batch_randomize:
-  histfolder += f'Lconcat{Lconcat}/'
+  distfolder += f'Lconcat{Lconcat}/'
 if Nbits > 1:
-  histfolder += f'Nbits{Nbits}/'
+  distfolder += f'Nbits{Nbits}/'
 ###---
   
-### OPTIMIZATION
-export_logKLs = 1
-optfolder0 = f'results/{corpus}/{LLM}/opt/'
-if randomize:
-  optfolder0 += f'randomize/'
-if Ntokens != 0:
-  optfolder0 += f'Ntokens{Ntokens}/'
-if batch_randomize:
-  optfolder0 += f'Lconcat{Lconcat}/'
-if Nbits > 1:
-  optfolder0 += f'Nbits{Nbits}/'
-###---
-
-# ### GENERATED TEXT
-# genfolder0 = f'results/{corpus}/{LLM}/gen/'
-# if randomize:
-#   genfolder0 += f'randomize/'
-# ###---
-  
-### ACTIVATION HISTS
-hist_actfolder = f'results/{corpus}/{LLM}/hist_act/'
-if batch_randomize:
-  hist_actfolder += f'Lconcat{Lconcat}/'
-
-# ### ACTIVATION CDFs
-# cdf_actfolder = f'results/{corpus}/{LLM}/cdf_act/'
-# if batch_randomize:
-#   cdf_actfolder += f'Lconcat{Lconcat}/'
-# cdf_actfolder += f'Nbits{Nbits}/'
-
-### ANGLES
-anglesfolder0 = wd + path0 + f'{corpus}/{LLM}/angles/'
-if batch_randomize:
-  anglesfolder0 += f'Lconcat{Lconcat}/'
-
-signfolder0 = wd + path0 + f'{corpus}/{LLM}/sign/'
-if batch_randomize:
-  signfolder0 += f'Lconcat{Lconcat}/'
