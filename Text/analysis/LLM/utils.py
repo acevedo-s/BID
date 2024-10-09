@@ -7,10 +7,77 @@ from numba import jit
 
 eps = 1E-7
 
+def ranks_real_to_spin(real_dist_indices,
+                     spin_distances,
+                     neighbour,
+                     resultsfolder,
+                     export_hists=0,
+                     n_export=10,
+                     filename='ranks_RS',
+                     ):
+  """ 
+  Defining ranks such that we have max_rank = Ns-1, as in real-space. 
+  neighbour = 1 means first neighbour.
+  """
+  
+  Ns = spin_distances.shape[0]
+  R = np.empty(shape=(Ns,)) # ranks in spin space 
+
+  for sample_idx in range(Ns):
+    D_values, D_counts = np.unique(spin_distances[sample_idx,:], return_counts=True)
+    assert D_values[0] == 0  # trivial zero
+    D_counts[0] -= 1
+    if D_counts[0] == 0:
+      D_values = D_values[1:]
+      D_counts = D_counts[1:]
+    if export_hists:
+      if sample_idx < n_export:
+        np.savetxt(fname=f'{resultsfolder}hist{sample_idx}.txt',
+        X=np.transpose([D_values,D_counts]))
+
+    neighbour_idx = real_dist_indices[sample_idx,neighbour]
+    histogram_idx = np.where(D_values == spin_distances[sample_idx,neighbour_idx])[0][0] 
+    if histogram_idx == 0: # first neighbours are rank 0 
+      R[sample_idx] = 0
+    else:
+      R[sample_idx] = np.sum(D_counts[:histogram_idx])
+  np.savetxt(fname=f'{resultsfolder}{filename}.txt',X=np.transpose([R]),fmt='%d')
+  return
+
+
+def ranks_spin_to_real(real_dist_indices,
+                     spin_distances,
+                     neighbour,
+                     resultsfolder,
+                     filename='ranks_SR'
+                     ):
+  Ns = spin_distances.shape[0] # number of samples
+  R = [] # ranks in spin space 
+  assert neighbour == 1 # for now the following only works for first neighbour, because of "min_dist"
+
+  for sample_idx in range(Ns):
+    min_dist = np.min(np.delete(spin_distances[sample_idx,:],sample_idx)) # minimum hamming distance from sample, excluding the self-distance...
+    neighbour_idcs = np.where(spin_distances[sample_idx,:] == min_dist)[0] # list of indeces that share the minimum distance in spin spaces (variable size)
+    for neighbour_idx in neighbour_idcs:
+      if neighbour_idx == sample_idx: 
+        continue # excluding self zero distance if its there
+      R.append(np.where(real_dist_indices[sample_idx,:] == neighbour_idx)[0][0] - 1) # rank of neighbour_idx in real space. note that minimum rank is 0
+  np.savetxt(fname=f'{resultsfolder}{filename}.txt', X=np.array(R),fmt='%d')
+  return
+
 @jit
-def poor_mans_layer_norm(a,N_batches,batch_size,layer_mean,layer_std):
+def _poor_mans_layer_norm(a,N_batches,batch_size,layer_mean,layer_std):
   for sample_idx in range(N_batches * batch_size):
     a[sample_idx] = (a[sample_idx] - layer_mean[sample_idx]) / layer_std[sample_idx] 
+  return a
+
+def poor_mans_layer_norm(a,N_batches,batch_size):
+  layer_mean = np.mean(a,axis=1)
+  layer_std = np.sqrt(np.var(a,axis=1)+ eps)
+  print(f'{layer_mean=}')
+  print(f'{layer_std=}')
+  print(f'applying poor mans layer norm')
+  a = _poor_mans_layer_norm(a,N_batches,batch_size,layer_mean,layer_std)
   return a
 
 def batch_shuffle(x, Lconcat, seed=1):
@@ -103,9 +170,7 @@ def binarization(
     B,T,E, = a.shape
     
     if layer_id == 0:
-      layer_mean = np.mean(a,axis=(1,2))
-      layer_std = np.sqrt(np.var(a,axis=(1,2))+ eps)
-      a = poor_mans_layer_norm(a,N_batches,batch_size,layer_mean,layer_std)
+      a = poor_mans_layer_norm(a,N_batches,batch_size)
 
     start = time()
     spins_batch = None
@@ -196,6 +261,7 @@ def load_sigmas(sigmasfolder0,
                 sublength_cutoff,
                 layer_id,
                 T,
+                keep_unique_spins=0,
                 ):
   for t in range(T):
     sigmas_filename = get_sigmas_filename(sigmasfolder0,
@@ -210,7 +276,8 @@ def load_sigmas(sigmasfolder0,
       sigmas = np.concatenate((sigmas,spins_batch),axis=1)
   # sigmas = sigmas.astype(np.int8)
   print(f'{sigmas.shape=}')
-  sigmas = np.unique(sigmas,axis=0)
+  if keep_unique_spins:
+    sigmas = np.unique(sigmas,axis=0) # note that this re-orders data! carefullll
   return sigmas
 
 def get_sigmas_filename(sigmasfolder0,
