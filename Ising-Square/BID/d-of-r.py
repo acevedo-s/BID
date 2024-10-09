@@ -52,7 +52,7 @@ plot_id = 0
 
 fig,ax = plt.subplots(1)
 
-log_scale = 0
+log_scale = 1
 plot_id = 0
 start = 0
 seed = 1 
@@ -66,6 +66,7 @@ logKL_list = np.empty(shape=sigma_list.shape)
 alpha_list = np.empty(shape=sigma_list.shape)
 rmax_list = np.empty(shape=sigma_list.shape)
 mean_remp_list = np.empty(shape=sigma_list.shape)
+min_remp_list = np.empty(shape=sigma_list.shape)
 s_exact = np.zeros(shape=T_list.shape)
 
 for T_id,T in enumerate(T_list):
@@ -81,6 +82,7 @@ for T_id,T in enumerate(T_list):
                     )
       optfolder0 = f'results/opt/L{L}/T{T:.2f}/'
       mean_remp_list[T_id,L_id,alphamax_id] = np.dot(H.D_values,H.D_probs)
+      min_remp_list[T_id,L_id,alphamax_id] = H.D_values[0]
       B = BID(H,
               alphamin=alphamin,
               alphamax=alphamax,
@@ -99,17 +101,37 @@ for L_id, L in enumerate(L_list):
   d = (sigma_list[:,L_id,alphamax_id] + 
        alpha_list[:,L_id,alphamax_id] * mean_remp_list[:,L_id,alphamax_id]
        )
+  d_min_r = (sigma_list[:,L_id,alphamax_id] + 
+       alpha_list[:,L_id,alphamax_id] * min_remp_list[:,L_id,alphamax_id]
+       )
   lbl = f'{L=}'
   ax.plot(T_list,
           d / L**2,
           '-',
           color=colors[plot_id],
           zorder=0,
+          label=r'$\langle d(r) \rangle $'
+          )
+  plot_id += 1
+  ax.plot(T_list,
+          sigma_list[:,L_id,alphamax_id] / L**2,
+          '-',
+          color=colors[plot_id],
+          zorder=0,
+          label=r'$BID$'
           )
   ax.plot(T_list,s_exact / np.log(2),color='black',label='s_exact')
+  ### test
+  ax.plot(T_list,
+          d_min_r / L**2,
+          '--',
+          color='gray',
+          zorder=0,
+          label=r'$d(r=min(r))$'
+          )
 
   plot_id += 1
-ax.set_ylabel(f"(d_0 + d_1 * <r>)/N")
+ax.set_ylabel(r" ")
 ax.set_xlabel(r'$T$')
 if log_scale:
   ax.set_yscale('log')
@@ -126,4 +148,5 @@ ax.vlines(2.269,
 # ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
 # ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
 ax.legend(loc='lower right')
+ax.set_title(f'number_of_samples:{Ns=};system_size{L=}')
 fig.savefig(figsfolder+f'Square-T-d-of-r.pdf',bbox_inches='tight')
