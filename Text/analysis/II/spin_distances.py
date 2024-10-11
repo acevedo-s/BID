@@ -16,20 +16,7 @@ a = load_activations(N_batches,
                     LLM,
                     Ntokens).numpy()
 
-# eliminating possible repetitions, note that this reorders data. 
-b = np.unique(a,axis=0)
-if b.shape != a.shape: 
-  print(f'WARNING!!!: there are repetitions in the real-valued activations')
-
-B,T,E = a.shape
-# keeping only sub_length tokens
-a = a[:,:sub_length,:]
-print(f'{a.shape=}')
-# vectorizing activations
-a  = np.reshape(a,(B,sub_length*E))
-
-if layer_id == 0:
-  a = poor_mans_layer_norm(a,N_batches,batch_size)
+a = formatting_activations(a,sub_length,Ns,layer_normalize)
 
 # binarization
 spins = np.sign(a)
@@ -43,6 +30,7 @@ H.distances += np.transpose(H.distances) # symmetric... just for format
 
 # exporting
 filename = f's_dists_sub_length{sub_length}'
+distfolder = get_distfolder(corpus,LLM,layer_id,layer_normalize)
 os.makedirs(distfolder,exist_ok=True)
 np.savetxt(fname=f'{distfolder}{filename}.txt',
            X=H.distances,

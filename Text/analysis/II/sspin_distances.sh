@@ -2,10 +2,10 @@
 #SBATCH -A Sis24_laio
 #SBATCH -p boost_usr_prod
 #SBATCH --job-name=LLM-spin-dists
-# SBATCH --qos=boost_qos_dbg 
-# SBATCH --time 00:30:00
-#SBATCH --qos=normal
-#SBATCH --time 24:00:00
+#SBATCH --qos=boost_qos_dbg 
+#SBATCH --time 00:30:00
+# SBATCH --qos=normal
+# SBATCH --time 24:00:00
 #SBATCH -N 1
 #SBATCH --ntasks-per-node=1
 #SBATCH --mem=100G
@@ -16,8 +16,9 @@ LLM=$1
 corpus=$2
 layer_id=$3
 sub_length=$4
+layer_normalize=$5
 
-python3 -u spin_distances.py "$LLM" "$corpus" "$layer_id" "$sub_length"
+python3 -u spin_distances.py "$LLM" "$corpus" "$layer_id" "$sub_length" "$layer_normalize"
 
 # for JAX:
 # export MPI4JAX_USE_CUDA_MPI=1

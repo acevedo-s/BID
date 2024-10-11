@@ -101,7 +101,8 @@ if compute_activations:
   del output,model
 
 ###SPINS:
-binarization(
+if binarize_activations:
+  binarization(
             sigmasfolder0,
             sublength_cutoff,
             layer_ids,

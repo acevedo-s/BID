@@ -6,6 +6,7 @@ from time import time
 
 start = time()
 neighbour = 1
+distfolder = get_distfolder(corpus,LLM,layer_id,layer_normalize)
 
 r_idcs_filename = f'r_dist_indices_sub_length{sub_length}'
 real_dist_indices = np.loadtxt(f'{distfolder}{r_idcs_filename}.txt').astype(int)

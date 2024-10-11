@@ -1,14 +1,11 @@
 import sys,os
 import numpy as np
 
-###TODO: agregar layer_id al path de los ranks.
-
-
 ### HYPERPARAMETERS
 Ntokens = 0 # 0 means to take all the tokens in the data sample.
 sublength_cutoff = 300 # tokens cutoff for GPU space constraint
 # layer_ids = range(25) 
-layer_ids = [24] # there are 25 for OPT ~300M and also for Pythia
+layer_ids = np.arange(0,24+1,dtype=int)#[24] # there are 25 for OPT ~300M and also for Pythia
 
 LLM = sys.argv[1]
 print(f'{LLM=}')
@@ -25,6 +22,8 @@ print(f'{layer_id=}')
 assert layer_id in layer_ids
 sub_length = int(sys.argv[4])
 print(f'{sub_length=}')
+layer_normalize = int(sys.argv[5])
+print(f'{layer_normalize=}')
 
 if LLM == 'OPT':
   max_length = 401
@@ -58,9 +57,12 @@ remove_activations = 0
 print(f'{remove_activations=}')
 batch_size = 100
 if sublength_cutoff == 300:
-  N_batches = 5
+  N_batches = 80
 elif sublength_cutoff == 10:
   N_batches = 2
+
+Ns = batch_size * N_batches
+print(f'{Ns=}')
 
 act_outputfolder0 = wd + path0 + f'{corpus}/{LLM}/activations/'
 act_outputfolder0 = f'{act_outputfolder0}max_length{max_length:d}/'
@@ -73,29 +75,30 @@ if batch_randomize:
 os.makedirs(act_outputfolder0,exist_ok=True)
 ###---
 
-### SPINS
-sigmasfolder0 = wd + path0 + f'{corpus}/{LLM}/sigmas/max_length{max_length:d}/'
-if randomize:
-  sigmasfolder0 += f'randomize/'
-if Ntokens != 0:
-  sigmasfolder0 += f'Ntokens{Ntokens}/'
-if batch_randomize:
-  sigmasfolder0 += f'Lconcat{Lconcat}/'
-if Nbits > 1:
-  sigmasfolder0 += f'Nbits{Nbits}/'
-###---
-
 ### DISTANCES 
 remove_spins = 0
-distfolder = f'results/{corpus}/{LLM}/dists/layer_id{layer_id}/'
+def get_distfolder(corpus,
+                   LLM,
+                   layer_id,
+                   layer_normalize=0,
+                   randomize=0,
+                   Ntokens=0,
+                   Lconcat=0,
+                   batch_randomize=0,
+                   Nbits=1,
+                   ):
+  distfolder = f'results/{corpus}/{LLM}/dists/layer_id{layer_id}/'
 
-if randomize:
-  distfolder += f'randomize/'
-if Ntokens != 0:
-  distfolder += f'Ntokens{Ntokens}/'
-if batch_randomize:
-  distfolder += f'Lconcat{Lconcat}/'
-if Nbits > 1:
-  distfolder += f'Nbits{Nbits}/'
+  if layer_normalize:
+    distfolder += f'normalized/'
+  if randomize:
+    distfolder += f'randomize/'
+  if Ntokens != 0:
+    distfolder += f'Ntokens{Ntokens}/'
+  if batch_randomize:
+    distfolder += f'Lconcat{Lconcat}/'
+  if Nbits > 1:
+    distfolder += f'Nbits{Nbits}/'
+  return distfolder
 ###---
   

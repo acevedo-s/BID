@@ -3,6 +3,7 @@ import sys
 sys.path.append('../LLM/')
 from utils import *
 from dadapy import Data
+np.set_printoptions(precision=30)
 
 from time import time
 start = time()
@@ -16,25 +17,14 @@ a = load_activations(N_batches,
                     LLM,
                     Ntokens).numpy()
 
-# checking for possible repetitions, note that this function reorders data. 
-b = np.unique(a,axis=0)
-if b.shape != a.shape: 
-  print(f'WARNING!!!: there are repetitions in the real-valued activations')
-
-B,T,E = a.shape
-# keeping only sub_length tokens
-a = a[:,:sub_length,:]
-print(f'{a.shape=}')
-# vectorizing activations
-a  = np.reshape(a,(B,sub_length*E))
-
-if layer_id == 0:
-  a = poor_mans_layer_norm(a,N_batches,batch_size)
+a = formatting_activations(a,sub_length,Ns,layer_normalize)
+B = a.shape[0]
 
 data = Data(coordinates=a,maxk=B-1)
 data.compute_distances(maxk=B-1)
 
 filename = f'r_dist_indices_sub_length{sub_length}'
+distfolder = get_distfolder(corpus,LLM,layer_id,layer_normalize)
 os.makedirs(distfolder,exist_ok=True)
 np.savetxt(fname=f'{distfolder}{filename}.txt',
            X=data.dist_indices,
