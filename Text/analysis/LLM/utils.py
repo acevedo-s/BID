@@ -62,8 +62,8 @@ def ranks_spin_to_real(real_dist_indices,
     for neighbour_idx in neighbour_idcs:
       if neighbour_idx == sample_idx: 
         continue # excluding self-distance if its there
-      R = np.where(real_dist_indices[sample_idx,:] == neighbour_idx)[0][0] - 1 # typically self distance is index 0, except for some cases (degenerated real-distances?) in which the routines put the degenerated distance at the first possition. for those, rank gives -1.
-      assert R != -1; f'BUG: {sample_idx=} has rank -1'
+      R = np.where(real_dist_indices[sample_idx,:] == neighbour_idx)[0][0] - 1 # typically self distance is index 0, except for some cases (degenerated real-distances) in which the routines put the degenerated distance at the first possition. for those, rank gives -1.
+      assert R != -1; f'BUG!!!!'
       Rs.append(R) # rank of neighbour_idx in real space. note that minimum rank is 0
   Rs = np.array(Rs)
   np.savetxt(fname=f'{resultsfolder}{filename}.txt', X=np.array(Rs),fmt='%d')
