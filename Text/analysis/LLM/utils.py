@@ -18,6 +18,7 @@ def ranks_real_to_spin(real_dist_indices,
   """ 
   Defining ranks such that we have max_rank = Ns-1, as in real-space. 
   neighbour = 1 means first neighbour.
+  NOTE: spin_distances must be symmetrized.
   """
   
   Ns = spin_distances.shape[0]

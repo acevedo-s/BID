@@ -24,7 +24,7 @@ figsfolder = f'results/{corpus}/{LLM}/figs/ranks/'
 os.makedirs(figsfolder,exist_ok=True)
 
 fig,ax = plt.subplots(1)
-sub_lengths = np.array([10,100,300]) #np.arange(100,300+1,100,dtype=int)
+sub_lengths = np.array([300]) #np.arange(100,300+1,100,dtype=int)
 layer_ids = np.arange(0,24+1,dtype=int)
 layer_normalize_flags = [0]
 
@@ -54,6 +54,9 @@ for sub_length_id,sub_length in enumerate(sub_lengths):
     ax.plot(layer_ids,II_RS[:,sub_length_id,layer_normalize_id],'o-',label=f'{lbl_RS}')
     ax.plot(layer_ids,II_SR[:,sub_length_id,layer_normalize_id],'s--',label=f'{lbl_SR}')
 
+# print(f'{layer_ids=}')
+# print(f'{II_RS[14,0,0]=}')
+# ax.hlines(II_RS[14,0,0],layer_ids[0],layer_ids[-1],linestyles='dashed',color='gray')
 ax.hlines(0,layer_ids[0],layer_ids[-1],linestyles='dashed',color='gray')
 # ax.legend()
 # ax.set_yscale('log')
