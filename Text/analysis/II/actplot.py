@@ -34,8 +34,8 @@ fig,ax = plt.subplots(1)
 for layer_normalize_id,layer_normalize in enumerate(layer_normalize_flags):
   distfolder = get_distfolder(corpus,LLM,layer_id,layer_normalize,Ntokens=Ntokens)
 
-  a_0 = np.loadtxt(actfolder + f'a0{sample_idx0}_layer{layer_id}.txt')
-  a_s = np.loadtxt(actfolder + f'a_nns_layer{layer_id}_s0{sample_idx0}.txt')
+  a_0 = np.loadtxt(actfolder + f'a0{sample_idx0}_sub_length{sub_length}_layer{layer_id}.txt')
+  a_s = np.loadtxt(actfolder + f'a_nns_layer{layer_id}_sub_length{sub_length}_s0{sample_idx0}.txt')
   # a_0 = np.abs(a_0)
   # a_s = np.abs(a_s)
   
@@ -51,7 +51,7 @@ for layer_normalize_id,layer_normalize in enumerate(layer_normalize_flags):
   ax.set_ylabel(r'$a_j$')
   ax.set_xlabel(f'j')
   ax.set_title(f'{layer_id=}')
-  figname = f'{figsfolder}act{layer_id}_sample{sample_idx0}.png'
+  figname = f'{figsfolder}act_sub_length{sub_length}_layer{layer_id}_sample{sample_idx0}.png'
 
   # box = ax.get_position()
   # ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])

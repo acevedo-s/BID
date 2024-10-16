@@ -8,10 +8,10 @@ corpus=OWebtext #Wikitext
 normalize_flags=(0)
 
 layer_ids=({0..24})
-sub_lengths=(200)
-# layer_ids=(0 24)
-# sub_lengths=(100 300)
-# sub_lengths=({20..300..20})
+# sub_lengths=(20)
+# layer_ids=(12)
+sub_lengths=(300)
+# sub_lengths=({40..300..20})
 
 debuggin=0
 echo debuggin=$debuggin

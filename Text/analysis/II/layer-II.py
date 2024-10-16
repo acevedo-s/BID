@@ -23,7 +23,7 @@ plot_id = 0
 figsfolder = f'results/{corpus}/{LLM}/figs/ranks/'
 
 fig,ax = plt.subplots(1)
-sub_lengths = np.array([200]) #np.arange(100,300+1,100,dtype=int)
+sub_lengths = np.array([300]) #np.arange(100,300+1,100,dtype=int)
 layer_ids = np.arange(0,24+1,dtype=int)
 # layer_ids = [1,14,19,24]
 layer_normalize_flags = [0]

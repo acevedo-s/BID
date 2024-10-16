@@ -34,7 +34,7 @@ II_RS = np.zeros(shape=(len(sub_lengths)))
 II_SR = np.zeros(shape=II_RS.shape)
 
 for sub_length_id,sub_length in enumerate(sub_lengths):
-  distfolder = get_distfolder(corpus,LLM,layer_id,layer_normalize)
+  distfolder = get_distfolder(corpus,LLM,layer_id,layer_normalize,Ntokens=Ntokens)
   RS_ranks_filename = f'ranks_RS_sub_length{sub_length}'
   RS = np.loadtxt(f'{distfolder}{RS_ranks_filename}.txt')
   II_RS[sub_length_id] = 2 * np.mean(RS) / (len(RS) - 1)
@@ -50,6 +50,6 @@ ax.set_yscale('log')
 ax.set_ylabel(r'$\Delta$')
 ax.set_xlabel(f'Number of tokens T')
 ax.set_title(f'{Ns=};{layer_id=}')
-figname = f'{figsfolder}II{layer_id}.pdf'
+figname = f'{figsfolder}II_layer{layer_id}.pdf'
 fig.savefig(figname,bbox_inches='tight')
 

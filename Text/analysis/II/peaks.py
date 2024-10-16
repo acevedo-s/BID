@@ -31,7 +31,7 @@ a = load_activations(N_batches,
 a = formatting_activations(a,sub_length,N_batches * batch_size,layer_normalize)
 
 print(f'{a[sample_idx0,:]=}')
-np.savetxt(actfolder + f'a0{sample_idx0}_layer{layer_id}.txt',
+np.savetxt(actfolder + f'a0{sample_idx0}_sub_length{sub_length}_layer{layer_id}.txt',
             np.transpose(a[sample_idx0,:]))
 
 # WHO IS THE FIRST NEIGHBOUR IN SPIN SPACE? 
@@ -48,5 +48,5 @@ for neighbour_idx in neighbour_idcs:
   print(a[neighbour_idx,:])
 
 a_nns = np.array(a_nns)
-np.savetxt(actfolder + f'a_nns_layer{layer_id}_s0{sample_idx0}.txt',
+np.savetxt(actfolder + f'a_nns_layer{layer_id}_sub_length{sub_length}_s0{sample_idx0}.txt',
             np.transpose(a_nns))

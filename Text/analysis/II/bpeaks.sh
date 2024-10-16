@@ -7,11 +7,11 @@ corpus=OWebtext #Wikitext
 normalize_flags=(0)
 # export N_batches=50
 # layer_ids=({0..24})
-sub_lengths=(200)
-layer_ids=(0 1 18 24)
+sub_lengths=(20 200 300)
+layer_ids=(0 1 12 18 24)
 # sub_lengths=(100 300)
 # sub_lengths=({20..300..20})
-sample_idcs=(1 2 3 4 5)
+sample_idcs=(1 2 3)
 
 for layer_normalize in "${normalize_flags[@]}"
 do
