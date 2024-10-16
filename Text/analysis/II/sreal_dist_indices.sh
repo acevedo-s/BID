@@ -17,10 +17,10 @@ corpus=$2
 layer_id=$3
 sub_length=$4
 layer_normalize=$5
-
+Ntokens=$6
 
 python3 -u real_dist_indices.py \
-"$LLM" "$corpus" "$layer_id" "$sub_length" "$layer_normalize"
+"$LLM" "$corpus" "$layer_id" "$sub_length" "$layer_normalize" "$Ntokens"
 
 # for JAX:
 # export MPI4JAX_USE_CUDA_MPI=1

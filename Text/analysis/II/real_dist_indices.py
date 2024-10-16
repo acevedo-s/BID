@@ -24,7 +24,12 @@ data = Data(coordinates=a,maxk=B-1)
 data.compute_distances(maxk=B-1)
 
 filename = f'r_dist_indices_sub_length{sub_length}'
-distfolder = get_distfolder(corpus,LLM,layer_id,layer_normalize)
+distfolder = get_distfolder(corpus,
+                            LLM,
+                            layer_id,
+                            layer_normalize,
+                            Ntokens=Ntokens,
+)
 os.makedirs(distfolder,exist_ok=True)
 np.savetxt(fname=f'{distfolder}{filename}.txt',
            X=data.dist_indices,

@@ -24,29 +24,25 @@ plt.rcParams['axes.prop_cycle'] = cycler(color=colors)
 markers = ['p','o','h','^','s']
 plot_id = 0
 
-
-figsfolder = f'results/{corpus}/{LLM}/figs/peaks/'
-actfolder = f'results/{corpus}/{LLM}/peaks/'
-
+figsfolder = f'results/{corpus}/{LLM}/figs/peaks/Ntokens{Ntokens}/'
+actfolder = f'results/{corpus}/{LLM}/peaks/Ntokens{Ntokens}/'
 
 layer_normalize_flags = [0]
-sample_idx0 = int(sys.argv[6])
+sample_idx0 = int(sys.argv[7])
 fig,ax = plt.subplots(1)
+
 for layer_normalize_id,layer_normalize in enumerate(layer_normalize_flags):
-  distfolder = get_distfolder(corpus,LLM,layer_id,layer_normalize)
+  distfolder = get_distfolder(corpus,LLM,layer_id,layer_normalize,Ntokens=Ntokens)
 
   a_0 = np.loadtxt(actfolder + f'a0{sample_idx0}_layer{layer_id}.txt')
   a_s = np.loadtxt(actfolder + f'a_nns_layer{layer_id}_s0{sample_idx0}.txt')
-
   # a_0 = np.abs(a_0)
   # a_s = np.abs(a_s)
   
   # a_0 = np.sort(a_0)
   # a_s = np.sort(a_s)
-  T = 300
-  E = 1024
-  ax.plot(a_0[:T*E])
-  ax.plot(a_s[:T*E])
+  ax.plot(a_0[:],'x')
+  ax.plot(a_s[:],'x')
   # ax.legend()
   # ax.set_yscale('log')
   # ax.set_xscale('log')
@@ -55,7 +51,7 @@ for layer_normalize_id,layer_normalize in enumerate(layer_normalize_flags):
   ax.set_ylabel(r'$a_j$')
   ax.set_xlabel(f'j')
   ax.set_title(f'{layer_id=}')
-  figname = f'{figsfolder}act{layer_id}_sample{sample_idx0}.pdf'
+  figname = f'{figsfolder}act{layer_id}_sample{sample_idx0}.png'
 
   # box = ax.get_position()
   # ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])

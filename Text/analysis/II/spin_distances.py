@@ -30,7 +30,12 @@ H.distances += np.transpose(H.distances) # symmetric... just for format
 
 # exporting
 filename = f's_dists_sub_length{sub_length}'
-distfolder = get_distfolder(corpus,LLM,layer_id,layer_normalize)
+distfolder = get_distfolder(corpus,
+                            LLM,
+                            layer_id,
+                            layer_normalize,
+                            Ntokens=Ntokens,
+)
 os.makedirs(distfolder,exist_ok=True)
 np.savetxt(fname=f'{distfolder}{filename}.txt',
            X=H.distances,

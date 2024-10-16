@@ -5,7 +5,7 @@ import numpy as np
 Ntokens = 0 # 0 means to take all the tokens in the data sample.
 sublength_cutoff = 300 # tokens cutoff for GPU space constraint
 # layer_ids = range(25) 
-layer_ids = np.arange(0,23+1,dtype=int) #[24] # there are 25 for OPT ~300M and also for Pythia
+layer_ids = np.arange(0,24+1,dtype=int) #[24] # there are 25 for OPT ~300M and also for Pythia
 
 LLM = sys.argv[1]
 print(f'{LLM=}')

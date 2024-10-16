@@ -2,28 +2,37 @@ import sys,os
 import numpy as np
 
 ### HYPERPARAMETERS
-Ntokens = 0 # 0 means to take all the tokens in the data sample.
 sublength_cutoff = 300 # tokens cutoff for GPU space constraint
 # layer_ids = range(25) 
 layer_ids = np.arange(0,24+1,dtype=int)#[24] # there are 25 for OPT ~300M and also for Pythia
 
 LLM = sys.argv[1]
 print(f'{LLM=}')
+
 corpus = sys.argv[2]
 print(f'{corpus=}')
-randomize = 0 #int(sys.argv[3])
-print(f'{randomize=}')
-batch_randomize = 0 #int(sys.argv[4])
-print(f'{batch_randomize=}')
-Nbits = 1 #int(sys.argv[5]) # 0 for real-valued activations # 1 for sign binarization, 2 for alternative binarization
-print(f'{Nbits=}')
+
 layer_id = int(sys.argv[3])
 print(f'{layer_id=}')
 assert layer_id in layer_ids
+
 sub_length = int(sys.argv[4])
 print(f'{sub_length=}')
+
 layer_normalize = int(sys.argv[5])
 print(f'{layer_normalize=}')
+
+Ntokens = int(sys.argv[6]) # 0 means to take all the tokens in the data sample.
+print(f'{Ntokens=}')
+
+randomize = 0 
+print(f'{randomize=}')
+
+batch_randomize = 0 
+print(f'{batch_randomize=}')
+
+Nbits = 1 #int(sys.argv[5]) # 0 for real-valued activations # 1 for sign binarization, 2 for alternative binarization
+print(f'{Nbits=}')
 
 if LLM == 'OPT':
   max_length = 401
@@ -57,7 +66,7 @@ remove_activations = 0
 print(f'{remove_activations=}')
 batch_size = 100
 if sublength_cutoff == 300:
-  N_batches = 80
+  N_batches = 50
 elif sublength_cutoff == 10:
   N_batches = 2
 
@@ -68,8 +77,6 @@ act_outputfolder0 = wd + path0 + f'{corpus}/{LLM}/activations/'
 act_outputfolder0 = f'{act_outputfolder0}max_length{max_length:d}/'
 if randomize:
   act_outputfolder0 += f'randomize/'
-if Ntokens != 0:
-  act_outputfolder0 += f'Ntokens{Ntokens}/'
 if batch_randomize:
   act_outputfolder0 += f'Lconcat{Lconcat}/'
 os.makedirs(act_outputfolder0,exist_ok=True)

@@ -17,9 +17,11 @@ corpus=$2
 layer_id=$3
 sub_length=$4
 layer_normalize=$5
-export sample_idx0=$6
+Ntokens=$6
+sample_idx0=$7
 
-python3 -u peaks.py "$LLM" "$corpus" "$layer_id" "$sub_length" "$layer_normalize"
+python3 -u peaks.py "$LLM" "$corpus" "$layer_id" \
+"$sub_length" "$layer_normalize" "$Ntokens" "$sample_idx0"
 
 # for JAX:
 # export MPI4JAX_USE_CUDA_MPI=1

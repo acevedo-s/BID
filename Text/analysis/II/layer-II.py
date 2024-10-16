@@ -21,11 +21,11 @@ plot_id = 0
 
 
 figsfolder = f'results/{corpus}/{LLM}/figs/ranks/'
-os.makedirs(figsfolder,exist_ok=True)
 
 fig,ax = plt.subplots(1)
-sub_lengths = np.array([300]) #np.arange(100,300+1,100,dtype=int)
+sub_lengths = np.array([200]) #np.arange(100,300+1,100,dtype=int)
 layer_ids = np.arange(0,24+1,dtype=int)
+# layer_ids = [1,14,19,24]
 layer_normalize_flags = [0]
 
 II_RS = np.zeros(shape=(len(layer_ids),
@@ -35,6 +35,8 @@ II_RS = np.zeros(shape=(len(layer_ids),
 II_SR = np.zeros(shape=II_RS.shape)
 
 for sub_length_id,sub_length in enumerate(sub_lengths):
+  # Ntokens = sub_length - 1
+  Ntokens = 0
   for layer_normalize_id,layer_normalize in enumerate(layer_normalize_flags):
     for layer_id_aux,layer_id in enumerate(layer_ids):
       lbl_RS = f'RS;T={sub_length}'
@@ -42,7 +44,7 @@ for sub_length_id,sub_length in enumerate(sub_lengths):
       if layer_normalize:
         lbl_SR += f' norm'
         lbl_RS += f' norm'
-      distfolder = get_distfolder(corpus,LLM,layer_id,layer_normalize)
+      distfolder = get_distfolder(corpus,LLM,layer_id,layer_normalize,Ntokens=Ntokens)
       RS_ranks_filename = f'ranks_RS_sub_length{sub_length}'
       RS = np.loadtxt(f'{distfolder}{RS_ranks_filename}.txt')
       II_RS[layer_id_aux,sub_length_id,layer_normalize_id] = 2 * np.mean(RS) / (len(RS) - 1)
@@ -62,12 +64,14 @@ ax.hlines(0,layer_ids[0],layer_ids[-1],linestyles='dashed',color='gray')
 # ax.set_yscale('log')
 ax.set_ylabel(r'$\Delta$')
 ax.set_xlabel(f'layer index')
-# ax.set_title(f'{}')
+# ax.set_title(f'{Ntokens=}')
+
 figname = f'{figsfolder}II-layer_dependence.pdf'
 
 box = ax.get_position()
 ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
 ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
 
+os.makedirs(figsfolder,exist_ok=True)
 fig.savefig(figname,bbox_inches='tight')
 

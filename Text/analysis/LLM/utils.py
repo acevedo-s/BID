@@ -87,7 +87,7 @@ def formatting_activations(a,sub_length,Ns0,layer_normalize):
   print(f'{a.shape=}')
 
   # vectorizing activations
-  a  = np.reshape(a,(B,sub_length*E))
+  a  = np.reshape(a,(B,T*E))
 
   # normalizing first layer
   if layer_normalize:
@@ -165,8 +165,6 @@ def load_activations(N_batches,
       a = torch.cat((a,
                     torch.load(a_filename,map_location=torch.device('cpu')))
                     )
-  if LLM == 'OPT':
-    a = a[:,1:,:] # Every sentence starts with the BOS=2 token in OPT
   a = a[:,-Ntokens:,:] # in case we want to retain only Ntokens
   print(f'importing took {(time()-start)/60:.1f} m')
   print(f'{a.shape=}')
