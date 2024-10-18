@@ -170,12 +170,19 @@ def load_activations(N_batches,
   print(f'{a.shape=}')
   return a
 
-# def activations_CDF(a):
+def torch_activations_CDF(a):
   
-#   a = torch.sort(torch.flatten(a))
-#   Nact = len(a)
+  a = torch.sort(torch.flatten(a))
+  Nact = len(a)
   
-#   return a,torch.range(start=1,end=Nact)/Nact
+  return a,torch.range(start=1,end=Nact)/Nact
+
+def np_activations_CDF(a):
+  print(f'{a.shape=}')
+  a = np.sort(a.flatten())
+  Nact = len(a)
+  
+  return a,np.arange(1,Nact+1)/Nact
 
 def binarization(
                 sigmasfolder0,

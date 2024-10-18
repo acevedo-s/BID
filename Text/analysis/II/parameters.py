@@ -71,7 +71,7 @@ elif sublength_cutoff == 10:
   N_batches = 2
 
 Ns = batch_size * N_batches
-print(f'{Ns=}')
+# print(f'{Ns=}')
 
 act_outputfolder0 = wd + path0 + f'{corpus}/{LLM}/activations/'
 act_outputfolder0 = f'{act_outputfolder0}max_length{max_length:d}/'

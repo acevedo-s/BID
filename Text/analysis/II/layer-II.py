@@ -66,7 +66,7 @@ ax.set_ylabel(r'$\Delta$')
 ax.set_xlabel(f'layer index')
 # ax.set_title(f'{Ntokens=}')
 
-figname = f'{figsfolder}II-layer_dependence.pdf'
+figname = f'{figsfolder}II-layer_dependence_sub_lengths{sub_lengths}.pdf'
 
 box = ax.get_position()
 ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
