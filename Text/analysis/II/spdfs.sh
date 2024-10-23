@@ -1,16 +1,16 @@
 #!/bin/bash
 #SBATCH -A Sis24_laio
 #SBATCH -p boost_usr_prod
-#SBATCH --job-name=cdfs
-# SBATCH --qos=boost_qos_dbg 
-# SBATCH --time 00:30:00
-#SBATCH --qos=normal
-#SBATCH --time 12:00:00
+#SBATCH --job-name=pdfs
+#SBATCH --qos=boost_qos_dbg 
+#SBATCH --time 00:30:00
+# SBATCH --qos=normal
+# SBATCH --time 12:00:00
 #SBATCH -N 1
 #SBATCH --ntasks-per-node=1
 #SBATCH --mem=100G
-#SBATCH --output=./log_cdfs/%x.o%j
-#SBATCH --error=./log_cdfs/%x.o%j
+#SBATCH --output=./log_pdfs/%x.o%j
+#SBATCH --error=./log_pdfs/%x.o%j
 
 LLM=$1
 corpus=$2
@@ -18,10 +18,10 @@ layer_id=$3
 sub_length=$4
 layer_normalize=$5
 Ntokens=$6
-# sample_idx0=$7
+N_batches=$7
 
-python3 -u cdfs.py "$LLM" "$corpus" "$layer_id" \
-"$sub_length" "$layer_normalize" "$Ntokens" # "$sample_idx0"
+python3 -u pdfs.py "$LLM" "$corpus" "$layer_id" \
+"$sub_length" "$layer_normalize" "$Ntokens" "$N_batches"
 
 # for JAX:
 # export MPI4JAX_USE_CUDA_MPI=1

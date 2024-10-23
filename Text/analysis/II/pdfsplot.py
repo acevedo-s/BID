@@ -24,16 +24,15 @@ import os,sys
 # plot_id = 0
 
 LLM = 'OPT'
-corpus = 'OWebtext'
+corpus = 'Wikitext' # 'OWebtext'
 Ntokens = 0
 
-figsfolder = f'results/{corpus}/{LLM}/figs/cdfs/Ntokens{Ntokens}/'
+figsfolder = f'results/{corpus}/{LLM}/figs/pdfs/Ntokens{Ntokens}/'
 os.makedirs(figsfolder,exist_ok=True)
+pdffolder = f'results/{corpus}/{LLM}/pdfs/Ntokens{Ntokens}/'
 
-cdffolder = f'results/{corpus}/{LLM}/cdfs/Ntokens{Ntokens}/'
 
-
-N_batches = 50
+N_batches = 1
 batch_size = 100
 Ns = N_batches * batch_size
 sub_lengths = np.array([20])
@@ -42,17 +41,20 @@ fig,ax = plt.subplots(1)
 
 for sub_length_id,sub_length in enumerate(sub_lengths):
   for layer_id_aux,layer_id in enumerate(layer_ids):
-    cdf_filename = cdffolder + f'cdf_sub_length{sub_length}_layer{layer_id}_Ns{Ns}.txt'
-    sorted_a, acumulated_prob = np.loadtxt(cdf_filename,unpack=True)
+    hist_filename = f'histogram_sub_length{sub_length}_layer{layer_id}_Ns{Ns}'
+    bin_edges_filename = f'bin_edges_sub_length{sub_length}_layer{layer_id}_Ns{Ns}'
+    hist = np.loadtxt(fname=f'{pdffolder}{hist_filename}.txt')
+    bin_edges = np.loadtxt(fname=f'{pdffolder}{bin_edges_filename}.txt')
+    bin_centers = (bin_edges[:-1] + bin_edges[1:]) / 2
+
     lbl = f'l={layer_id};T={sub_length}'
-    ax.plot(sorted_a,acumulated_prob,'x',label=lbl)
-    # print(f'{acumulated_prob[:10]=}')
+    ax.plot(bin_centers,hist,'x',label=lbl)
     # ax.set_yscale('log')
     # ax.set_xscale('log')
     # ax.vlines(0,0,1,color='black')
-    figname = f'{figsfolder}act_cdf_layer{layer_ids}_Ns{Ns}_sub_lengths{sub_lengths}.png'
+    figname = f'{figsfolder}act_pdf_layer{layer_ids}_Ns{Ns}_sub_lengths{sub_lengths}.png'
     ax.legend()
-    ax.set_ylabel(r'$cdf(a)$')
+    ax.set_ylabel(r'$pdf(a)$')
     ax.set_xlabel(f'a')
 fig.savefig(figname,bbox_inches='tight')
 

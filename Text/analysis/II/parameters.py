@@ -1,5 +1,6 @@
 import sys,os
 import numpy as np
+from time import time
 
 ### HYPERPARAMETERS
 sublength_cutoff = 300 # tokens cutoff for GPU space constraint
