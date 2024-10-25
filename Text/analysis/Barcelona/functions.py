@@ -1,11 +1,28 @@
-import json
-import pickle
 import sys,os
-import torch
 import numpy as np
 import matplotlib.pyplot as plt
 
+def get_model(LLM,
+              modelname = "facebook/opt-6.7b"):
+  if LLM=='OPT':
+    from transformers.models.opt import (
+                                        OPTModel as MOD, # no-head
+                                        OPTConfig,
+                                        )
+    from transformers import AutoTokenizer
 
+    # modelname = "facebook/opt-350m"
+    config = OPTConfig.from_pretrained(modelname,
+                                      # output_hidden_states=True,
+                                      )
+    model = MOD.from_pretrained(modelname,
+                                    config=config,
+                                    )#.to(device)
+    tokenizer = AutoTokenizer.from_pretrained(modelname,
+                                          padding_side='left',
+                                          device_map="auto",
+                                          )
+  return model,config,tokenizer
 
 def get_weights_folder(LLM,layer_idx,layer_name):
   weigthsfolder = f'weights/{LLM}/layer{layer_idx}/{layer_name}/'
@@ -37,4 +54,6 @@ def extract_MLP(output,layer_idx,f,resultsfolder):
   np.savetxt(fname=f'{resultsfolder}eigenvalues.txt',X=eigenvalues)
   np.savetxt(fname=f'{resultsfolder}eigenvectors.txt',X=eigenvectors)
 
-  
+def find_spikes(x,n_sigmas=5):
+  x = np.abs(x-np.mean(x))
+  return np.where(x>n_sigmas*np.std(x))[0]

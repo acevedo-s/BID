@@ -2,34 +2,21 @@
 from functions import * 
 
 LLM = 'OPT'
+model,config,tokenizer = get_model(LLM)
 
-### MODEL 
-if LLM=='OPT':
-  from transformers.models.opt import (
-                                      OPTModel as MOD, # no-head
-                                      OPTConfig,
-                                      )
-  modelname = "facebook/opt-6.7b"
-  # modelname = "facebook/opt-350m"
-  config = OPTConfig.from_pretrained(modelname,
-                                    # output_hidden_states=True,
-                                    )
-  model = MOD.from_pretrained(modelname,
-                                  config=config,
-                                  )#.to(device)
-elif LLM=='Pythia':
-  from transformers import (GPTNeoXForCausalLM,
-                            GPTNeoXConfig
-                            )
-  modelname = "EleutherAI/pythia-410m-deduped"
-  model = GPTNeoXForCausalLM.from_pretrained(
-                            modelname,
-                            revision="main",
-                            # cache_dir="./pythia-410m-deduped/main",
-                            )#.to(device)
-  config = GPTNeoXConfig.from_pretrained(modelname,
-                                       # output_hidden_states=True,
-                                        )
+# elif LLM=='Pythia':
+#   from transformers import (GPTNeoXForCausalLM,
+#                             GPTNeoXConfig
+#                             )
+#   modelname = "EleutherAI/pythia-410m-deduped"
+#   model = GPTNeoXForCausalLM.from_pretrained(
+#                             modelname,
+#                             revision="main",
+#                             # cache_dir="./pythia-410m-deduped/main",
+#                             )#.to(device)
+#   config = GPTNeoXConfig.from_pretrained(modelname,
+#                                        # output_hidden_states=True,
+#                                         )
 # with open("models.json",'r') as f:
 #     model_path = json.load(f)[modelname]
 
