@@ -1,28 +1,42 @@
 import sys,os
 import numpy as np
-import matplotlib.pyplot as plt
 
 def get_model(LLM,
-              modelname = "facebook/opt-6.7b"):
-  if LLM=='OPT':
-    from transformers.models.opt import (
-                                        OPTModel as MOD, # no-head
-                                        OPTConfig,
-                                        )
+              modelname = None,
+              load_tokenizer = True):
+  tokenizer = None
+  from transformers import (AutoModelForCausalLM)
+
+  if load_tokenizer:
     from transformers import AutoTokenizer
 
-    # modelname = "facebook/opt-350m"
-    config = OPTConfig.from_pretrained(modelname,
-                                      # output_hidden_states=True,
-                                      )
-    model = MOD.from_pretrained(modelname,
-                                    config=config,
-                                    )#.to(device)
-    tokenizer = AutoTokenizer.from_pretrained(modelname,
-                                          padding_side='left',
-                                          device_map="auto",
-                                          )
-  return model,config,tokenizer
+  if LLM=='OPT':
+    if modelname == None:
+      modelname = "facebook/opt-6.7b"
+      # modelname = "facebook/opt-350m"
+
+    model = AutoModelForCausalLM.from_pretrained(modelname,
+                                # config=config,
+                                )#.to(device)
+    if load_tokenizer:
+      tokenizer = AutoTokenizer.from_pretrained(modelname,
+                                                padding_side='left',
+                                                device_map="auto",
+                                                )
+  elif LLM=='Pythia':
+    if modelname == None:
+      # modelname = "EleutherAI/pythia-410m-deduped"
+      modelname = "EleutherAI/pythia-6.9b-deduped"
+
+    model = AutoModelForCausalLM.from_pretrained(modelname)
+
+    if load_tokenizer:
+      tokenizer = AutoTokenizer.from_pretrained(modelname,
+                                                padding_side='left',
+                                                device_map="auto",
+                                                )
+      
+  return (model,tokenizer)
 
 def get_weights_folder(LLM,layer_idx,layer_name):
   weigthsfolder = f'weights/{LLM}/layer{layer_idx}/{layer_name}/'

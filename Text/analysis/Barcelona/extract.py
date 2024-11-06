@@ -1,22 +1,14 @@
 #!/usr/bin/python
-from functions import * 
+import sys,os
+import functions
+import importlib
+importlib.reload(functions)
 
 LLM = 'OPT'
-model,config,tokenizer = get_model(LLM)
+modelname = f'facebook/opt-1.3b'
+model,tokenizer = functions.get_model(LLM,modelname)
 
-# elif LLM=='Pythia':
-#   from transformers import (GPTNeoXForCausalLM,
-#                             GPTNeoXConfig
-#                             )
-#   modelname = "EleutherAI/pythia-410m-deduped"
-#   model = GPTNeoXForCausalLM.from_pretrained(
-#                             modelname,
-#                             revision="main",
-#                             # cache_dir="./pythia-410m-deduped/main",
-#                             )#.to(device)
-#   config = GPTNeoXConfig.from_pretrained(modelname,
-#                                        # output_hidden_states=True,
-#                                         )
+
 # with open("models.json",'r') as f:
 #     model_path = json.load(f)[modelname]
 
@@ -66,10 +58,12 @@ for layer_id,l in enumerate(model.base_model.decoder.layers):
 print(f'{output[layer_id]["fc1"]["weight"].shape=}')
 print(f'{output[layer_id]["fc1"]["bias"].shape=}')
 
-layer_idx = 27
+
 f = sys.argv[1]
 print(f'{f=}')
+layer_idx = int(sys.argv[2])
+print(f'{layer_idx=}')
 
-resultsfolder = get_weights_folder(LLM,layer_idx,layer_name=f)
-extract_MLP(output,layer_idx,f,resultsfolder)
+resultsfolder = functions.get_weights_folder(LLM,layer_idx,layer_name=f)
+functions.extract_MLP(output,layer_idx,f,resultsfolder)
 

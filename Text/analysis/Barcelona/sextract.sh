@@ -16,12 +16,9 @@
 # export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 
 f=$1
-# corpus=$2
-# randomize=$3
-# batch_randomize=$4
-# Nbits=$5
+layer_idx=$2
 
-python3 -u extract.py "$f"
+python3 -u extract.py "$f" "$layer_idx"
 
 # for JAX:
 # export MPI4JAX_USE_CUDA_MPI=1
