@@ -1,0 +1,21 @@
+Using cache found in /home/sacevedo/.cache/torch/hub/pytorch_vision_v0.10.0
+/home/sacevedo/my_env/lib64/python3.8/site-packages/torch/overrides.py:110: UserWarning: 'has_cuda' is deprecated, please use 'torch.backends.cuda.is_built()'
+  torch.has_cuda,
+/home/sacevedo/my_env/lib64/python3.8/site-packages/torch/overrides.py:111: UserWarning: 'has_cudnn' is deprecated, please use 'torch.backends.cudnn.is_available()'
+  torch.has_cudnn,
+/home/sacevedo/my_env/lib64/python3.8/site-packages/torch/overrides.py:117: UserWarning: 'has_mps' is deprecated, please use 'torch.backends.mps.is_built()'
+  torch.has_mps,
+/home/sacevedo/my_env/lib64/python3.8/site-packages/torch/overrides.py:118: UserWarning: 'has_mkldnn' is deprecated, please use 'torch.backends.mkldnn.is_available()'
+  torch.has_mkldnn,
+resize=1
+crop_size=224
+class_id=4
+layer_id=5
+dbg=0
+model_name='resnet18'
+layer layer3.1.relu_1
+class: English_setter, code: n02100735
+shape of features:torch.Size([1277, 50176])
+/home/sacevedo/my_env/lib64/python3.8/site-packages/dadapy/feature_weighting.py:76: UserWarning: data type is int64: most methods work only with float-type inputs
+  super().__init__(
+this took 0.3 mins

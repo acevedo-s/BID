@@ -5,7 +5,7 @@
 #SBATCH --time=12:00:00
 #SBATCH --mem=40G
 #SBATCH --partition=regular1,regular2
-# SBATCH --qos=fastlane # for debugging
+#SBATCH --qos=fastlane # for debugging
 #SBATCH --output=./log_opt/%x.o%j              # Standard output
 #SBATCH --error=./log_opt/%x.o%j               # Standard error
 

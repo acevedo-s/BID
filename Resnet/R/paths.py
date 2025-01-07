@@ -19,3 +19,17 @@ def get_optfolder(optimization_folder,model_name,crop_size,key,layer_name):
   return optfolder
 
 shuffled_afolder = f'/scratch/sacevedo/Imagenet2012/shuffled/'
+
+def makefolder(base='./',
+               create_folder=False,
+               **kwargs,
+               ):
+  folder = base
+  for key, value in kwargs.items():
+    if value != None:
+      folder += key + f'_{value}/'
+  os.makedirs(folder,exist_ok=True)
+  return folder
+
+
+
