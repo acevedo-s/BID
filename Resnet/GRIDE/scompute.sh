@@ -12,10 +12,13 @@ crop_size=$1
 class_id=$2
 layer_id=$3
 dbg=$4
+shuffle=$5
 
-if [ "$class_id" -eq -1 ]; then
-    python3 -u shuffdistances.py $crop_size $class_id $layer_id
+if [ "$shuffle" -eq 0 ]; then
+  python3 -u compute.py $crop_size $class_id $layer_id $dbg
 else
-    python3 -u compute.py $crop_size $class_id $layer_id $dbg
+  python3 -u shuff_compute.py $crop_size $class_id $layer_id $dbg
 fi
+
+
 

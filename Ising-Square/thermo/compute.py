@@ -24,17 +24,16 @@ def Mag(X):
   return M
 
 nseeds = 2000
-L_list = [90]
-T_list = np.arange(1,2.1+eps,.1)
+L_list = np.arange(30,100+1,10,dtype=int)
+T_list = np.arange(2,2.1+eps,.1)
 T_list = np.concatenate((T_list,
                          np.arange(2.2,2.4+eps,.01))
                          )
 T_list = np.concatenate((T_list,
-                        # np.array([2.5])
-                         np.arange(2.5,4+eps,.1)
+                         np.arange(2.5,3+eps,.1)
                         )
                         )
-# T_list = np.array([1])
+# T_list = np.arange(2,3+eps,.1)
 for L_id,L in enumerate(L_list):
   print(f'{L=}')
   datafolder = f'/scratch/sacevedo/{geometry}/canonical/L{L}/'
@@ -42,6 +41,7 @@ for L_id,L in enumerate(L_list):
   E = np.empty(shape=(nseeds,len(T_list)))
   M = np.empty(shape=(nseeds,len(T_list)))
   for T_id,T in enumerate(T_list):
+    print(f'{T=:.2f}')
     datafile = datafolder + f'T{T:.2f}.txt'
     X = np.loadtxt(f'{datafile}')[:nseeds]
     Ns,N = X.shape
