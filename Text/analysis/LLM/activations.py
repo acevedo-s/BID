@@ -12,7 +12,7 @@ warnings.simplefilter("ignore", FutureWarning)
 
 sub_length = sublength_cutoff
 if LLM == 'OPT':
-  sub_length += 1# Every sentence starts with a BOS = 2 token after OPT tokenizer, not the case for Pythia's...
+  sub_length += 1 # Every sentence starts with a BOS = 2 token after OPT tokenizer, not the case for Pythia's...
 
 
 ### MODEL 
@@ -50,7 +50,6 @@ x0 = torch.from_numpy(
                   np.loadtxt(tokens_outputfolder + 'token_ids.txt').astype(int)
                   ).to(device)
 print(f'{x0.shape=}')
-Ns0, _ = x0.shape
 # print(f'{x0.shape=}')
 # print(x0[0])
 # x_decoded = tokenizer.batch_decode(x0,
@@ -101,7 +100,8 @@ if compute_activations:
   del output,model
 
 ###SPINS:
-binarization(
+if binarize_activations:
+  binarization(
             sigmasfolder0,
             sublength_cutoff,
             layer_ids,

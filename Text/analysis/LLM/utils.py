@@ -18,6 +18,7 @@ def ranks_real_to_spin(real_dist_indices,
   """ 
   Defining ranks such that we have max_rank = Ns-1, as in real-space. 
   neighbour = 1 means first neighbour.
+  NOTE: spin_distances must be symmetrized.
   """
   
   Ns = spin_distances.shape[0]
@@ -52,7 +53,7 @@ def ranks_spin_to_real(real_dist_indices,
                      filename='ranks_SR'
                      ):
   Ns = spin_distances.shape[0] # number of samples
-  R = [] # ranks in spin space 
+  Rs = [] # ranks in spin space 
   assert neighbour == 1 # for now the following only works for first neighbour, because of "min_dist"
 
   for sample_idx in range(Ns):
@@ -60,24 +61,54 @@ def ranks_spin_to_real(real_dist_indices,
     neighbour_idcs = np.where(spin_distances[sample_idx,:] == min_dist)[0] # list of indeces that share the minimum distance in spin spaces (variable size)
     for neighbour_idx in neighbour_idcs:
       if neighbour_idx == sample_idx: 
-        continue # excluding self zero distance if its there
-      R.append(np.where(real_dist_indices[sample_idx,:] == neighbour_idx)[0][0] - 1) # rank of neighbour_idx in real space. note that minimum rank is 0
-  np.savetxt(fname=f'{resultsfolder}{filename}.txt', X=np.array(R),fmt='%d')
+        continue # excluding self-distance if its there
+      R = np.where(real_dist_indices[sample_idx,:] == neighbour_idx)[0][0] - 1 # typically self distance is index 0, except for some cases (degenerated real-distances) in which the routines put the degenerated distance at the first possition. for those, rank gives -1.
+      assert R != -1; f'BUG!!!!'
+      Rs.append(R) # rank of neighbour_idx in real space. note that minimum rank is 0
+  Rs = np.array(Rs)
+  np.savetxt(fname=f'{resultsfolder}{filename}.txt', X=np.array(Rs),fmt='%d')
   return
 
+def formatting_activations(a,sub_length,Ns0,layer_normalize):
+  """
+  Ns0 is the total number of samples loaded: Ns0 = N_batches * batch_size
+  """
+  # keeping only sub_length tokens
+  a = a[:,:sub_length,:]
+
+  # checking for possible repetitions, note that this function reorders data. 
+  a = np.unique(a,axis=0)
+
+  B,T,E = a.shape
+
+  if B != Ns0:
+    print(f'WARNING: There were repetitions in the real-valued activations. applying "np.unique" reorders data')
+
+  print(f'{a.shape=}')
+
+  # vectorizing activations
+  a  = np.reshape(a,(B,T*E))
+
+  # normalizing first layer
+  if layer_normalize:
+    a = poor_mans_layer_norm(a)
+
+  return a
+
 @jit
-def _poor_mans_layer_norm(a,N_batches,batch_size,layer_mean,layer_std):
-  for sample_idx in range(N_batches * batch_size):
+def _poor_mans_layer_norm(a,Ns,layer_mean,layer_std):
+  for sample_idx in range(Ns):
     a[sample_idx] = (a[sample_idx] - layer_mean[sample_idx]) / layer_std[sample_idx] 
   return a
 
-def poor_mans_layer_norm(a,N_batches,batch_size):
+def poor_mans_layer_norm(a):
   layer_mean = np.mean(a,axis=1)
   layer_std = np.sqrt(np.var(a,axis=1)+ eps)
   print(f'{layer_mean=}')
   print(f'{layer_std=}')
   print(f'applying poor mans layer norm')
-  a = _poor_mans_layer_norm(a,N_batches,batch_size,layer_mean,layer_std)
+  Ns = a.shape[0]
+  a = _poor_mans_layer_norm(a,Ns,layer_mean,layer_std)
   return a
 
 def batch_shuffle(x, Lconcat, seed=1):
@@ -134,19 +165,24 @@ def load_activations(N_batches,
       a = torch.cat((a,
                     torch.load(a_filename,map_location=torch.device('cpu')))
                     )
-  if LLM == 'OPT':
-    a = a[:,1:,:] # Every sentence starts with the BOS=2 token in OPT
   a = a[:,-Ntokens:,:] # in case we want to retain only Ntokens
   print(f'importing took {(time()-start)/60:.1f} m')
   print(f'{a.shape=}')
   return a
 
-# def activations_CDF(a):
+def torch_activations_CDF(a):
   
-#   a = torch.sort(torch.flatten(a))
-#   Nact = len(a)
+  a = torch.sort(torch.flatten(a))
+  Nact = len(a)
   
-#   return a,torch.range(start=1,end=Nact)/Nact
+  return a,torch.range(start=1,end=Nact)/Nact
+
+def np_activations_CDF(a):
+  print(f'{a.shape=}')
+  a = np.sort(a.flatten())
+  Nact = len(a)
+  
+  return a,np.arange(1,Nact+1)/Nact
 
 def binarization(
                 sigmasfolder0,
@@ -170,7 +206,7 @@ def binarization(
     B,T,E, = a.shape
     
     if layer_id == 0:
-      a = poor_mans_layer_norm(a,N_batches,batch_size)
+      a = poor_mans_layer_norm(a)
 
     start = time()
     spins_batch = None

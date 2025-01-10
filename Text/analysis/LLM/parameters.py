@@ -5,7 +5,7 @@ import numpy as np
 Ntokens = 0 # 0 means to take all the tokens in the data sample.
 sublength_cutoff = 300 # tokens cutoff for GPU space constraint
 # layer_ids = range(25) 
-layer_ids = [24] # there are 25 for OPT ~300M and also for Pythia
+layer_ids = np.arange(0,24+1,dtype=int) #[24] # there are 25 for OPT ~300M and also for Pythia
 
 LLM = sys.argv[1]
 print(f'{LLM=}')
@@ -45,7 +45,7 @@ else:
   Lconcat = None
 
 ### ACTIVATIONS
-compute_activations = 0
+compute_activations = 1
 remove_activations = 0
 print(f'{remove_activations=}')
 batch_size = 100
@@ -66,6 +66,7 @@ os.makedirs(act_outputfolder0,exist_ok=True)
 ###---
 
 ### SPINS
+binarize_activations = 0
 sigmasfolder0 = wd + path0 + f'{corpus}/{LLM}/sigmas/max_length{max_length:d}/'
 if randomize:
   sigmasfolder0 += f'randomize/'
