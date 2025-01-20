@@ -30,15 +30,16 @@ class_list = list(class_dict.keys())[:]
 
 layer_name = layer_names[layer_id]
 print(f'layer {layer_name}')
-key = class_list[class_id]
-print(f'class: {key}, code: {class_dict[key]}')
+
+key = 'shuffled'
+print(f'{key=}')
 
 ### loading activations:
 i0 = 0
 if dbg:
   i_max = 1
 else:
-  i_max = 13
+  i_max = 79 # can be seen in the datafolder...
 
 chunk_size = 100
 flatten_activations = 1
@@ -60,14 +61,24 @@ precision = 8
 a = np.round(a,precision)
 a = 2*np.sign(a).astype(int)-1
 
+### SEPARATING DATA IN BLOCKS TO HAVE THE SAME NUMBER OF DATA SAMPLES AS THE FIRST EXPERIMENT
+n_blocks = len(class_list) # there were 7 classes, so lets divide the dataset in 7 again
+block_size = Ns // n_blocks
+print(f'{block_size=}')
+print(f'{Ns=}')
+a = a[class_id*block_size:(class_id+1)*block_size]
+print(f'{a.shape=}')
+
 ### FCI
 a = pyFCI.center_and_normalize(a)
 fci = pyFCI.FCI(a)
 d,x0,err = pyFCI.fit_FCI(fci)
-resultsfolder = makefolder(base=f'results/FCI/',
+
+### EXPORTING
+resultsfolder = makefolder(base=f'results/FCI/shuffle/',
                            create_folder=True,
                            crop_size=crop_size,
-                           key=key,
+                           key=class_id,
                            layer_id=layer_id,
                            )
 np.savetxt(resultsfolder + 'FCI.txt',X=[d,x0,err])
