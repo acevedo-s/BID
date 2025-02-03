@@ -1,4 +1,4 @@
-{'training': False, '_parameters': OrderedDict(), '_buffers': OrderedDict(), '_non_persistent_buffers_set': set(), '_backward_pre_hooks': OrderedDict(), '_backward_hooks': OrderedDict(), '_is_full_backward_hook': None, '_forward_hooks': OrderedDict(), '_forward_hooks_with_kwargs': OrderedDict(), '_forward_hooks_always_called': OrderedDict(), '_forward_pre_hooks': OrderedDict(), '_forward_pre_hooks_with_kwargs': OrderedDict(), '_state_dict_hooks': OrderedDict(), '_state_dict_pre_hooks': OrderedDict(), '_load_state_dict_pre_hooks': OrderedDict(), '_load_state_dict_post_hooks': OrderedDict(), '_modules': OrderedDict([('gpt_neox', GPTNeoXModel(
+{'training': False, '_parameters': {}, '_buffers': {}, '_non_persistent_buffers_set': set(), '_backward_pre_hooks': OrderedDict(), '_backward_hooks': OrderedDict(), '_is_full_backward_hook': None, '_forward_hooks': OrderedDict(), '_forward_hooks_with_kwargs': OrderedDict(), '_forward_hooks_always_called': OrderedDict(), '_forward_pre_hooks': OrderedDict(), '_forward_pre_hooks_with_kwargs': OrderedDict(), '_state_dict_hooks': OrderedDict(), '_state_dict_pre_hooks': OrderedDict(), '_load_state_dict_pre_hooks': OrderedDict(), '_load_state_dict_post_hooks': OrderedDict(), '_modules': {'gpt_neox': GPTNeoXModel(
   (embed_in): Embedding(50304, 1024)
   (emb_dropout): Dropout(p=0.0, inplace=False)
   (layers): ModuleList(
@@ -7,7 +7,7 @@
       (post_attention_layernorm): LayerNorm((1024,), eps=1e-05, elementwise_affine=True)
       (post_attention_dropout): Dropout(p=0.0, inplace=False)
       (post_mlp_dropout): Dropout(p=0.0, inplace=False)
-      (attention): GPTNeoXAttention(
+      (attention): GPTNeoXSdpaAttention(
         (rotary_emb): GPTNeoXRotaryEmbedding()
         (query_key_value): Linear(in_features=1024, out_features=3072, bias=True)
         (dense): Linear(in_features=1024, out_features=1024, bias=True)
@@ -21,7 +21,9 @@
     )
   )
   (final_layer_norm): LayerNorm((1024,), eps=1e-05, elementwise_affine=True)
-)), ('embed_out', Linear(in_features=1024, out_features=50304, bias=False))]), 'config': GPTNeoXConfig {
+  (rotary_emb): GPTNeoXRotaryEmbedding()
+), 'embed_out': Linear(in_features=1024, out_features=50304, bias=False)}, 'config': GPTNeoXConfig {
+  "_attn_implementation_autoset": true,
   "_name_or_path": "EleutherAI/pythia-410m-deduped",
   "architectures": [
     "GPTNeoXForCausalLM"
@@ -41,12 +43,14 @@
   "model_type": "gpt_neox",
   "num_attention_heads": 16,
   "num_hidden_layers": 24,
+  "partial_rotary_factor": 0.25,
   "rope_scaling": null,
+  "rope_theta": 10000,
   "rotary_emb_base": 10000,
   "rotary_pct": 0.25,
   "tie_word_embeddings": false,
   "torch_dtype": "float16",
-  "transformers_version": "4.38.2",
+  "transformers_version": "4.46.3",
   "use_cache": true,
   "use_parallel_residual": true,
   "vocab_size": 50304

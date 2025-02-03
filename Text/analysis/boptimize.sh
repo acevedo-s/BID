@@ -5,9 +5,9 @@ corpus=$2
 randomize=$3
 batch_randomize=$4
 Nbits=$5
-alphamax_id_max=0
+alphamax_id_max=3
 alphamin_id_max=0
-l_list=(24)
+l_list=(0 24)
 for l in "${l_list[@]}"
   do
   layer_id=$l

@@ -1,9 +1,12 @@
+import os 
+os.environ["JAX_PLATFORMS"] = "cpu"
+
 import sys
 sys.path.append('LLM/')
 from parameters import *
 import matplotlib.pyplot as plt
 import numpy as np
-from dadapy._utils.stochastic_minimization_hamming import *
+from dadapy.hamming import *
 
 
 
@@ -49,7 +52,7 @@ for layer_id in layer_ids:
     emb_dim = 512
   else:
     emb_dim = 1024
-  sub_lengths = np.array([i * 10  for i in range(8,30+1,2)])
+  sub_lengths = np.array([i * 10  for i in range(10,30+1,2)])
   N_list = (sub_lengths) * emb_dim * Nbits
   fig,(axs,axa,axKL,axr) = plt.subplots(nrows=4,
                                         ncols=1,

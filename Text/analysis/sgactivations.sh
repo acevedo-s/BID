@@ -4,7 +4,6 @@
 #SBATCH --job-name=LLM-act
 # SBATCH --qos=boost_qos_dbg
 # SBATCH --time 00:30:00
-#SBATCH --qos=normal
 #SBATCH --time 24:00:00
 #SBATCH -N 1
 #SBATCH --ntasks-per-node=1
@@ -14,12 +13,21 @@
 #SBATCH --error=./log_act/%x_%j.o
 
 export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
+# dbg=1
+# export dbg=$dbg
 
 LLM=$1
 corpus=$2
 randomize=$3
 batch_randomize=$4
 Nbits=$5
+
+# qos="normal"
+# time=24:00:00
+# if [ "$dbg" -eq 1 ]; then
+#   qos="boost_qos_dbg"
+#   time=00:30:00
+# fi
 
 python3 -u LLM/activations.py "$LLM" "$corpus" "$randomize" "$batch_randomize" "$Nbits"
 

@@ -4,17 +4,18 @@
 #SBATCH --job-name=opt
 # SBATCH --qos=boost_qos_dbg 
 # SBATCH --time 00:30:00
-#SBATCH --qos=normal
 #SBATCH --time 24:00:00
 #SBATCH -N 1
 #SBATCH --ntasks-per-node=1
 #SBATCH --mem=12G
-#SBATCH --array=10-30:2
+#SBATCH --array=6-30:2
 #SBATCH --output=./log_opt/%x.o%A-%a
 #SBATCH --error=./log_opt/%x.o%A-%a
 
 export JAX_ENABLE_X64=True
 export JAX_DEBUG_NANS=True
+export JAX_PLATFORMS=cpu
+
 LLM=$1
 corpus=$2
 randomize=$3
