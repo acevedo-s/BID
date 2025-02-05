@@ -150,22 +150,54 @@ def batch_shuffle(x, Lconcat, seed=1):
     print(shuffled_tensor_again)
     """
 
+# def load_activations(N_batches,
+#                      act_outputfolder,
+#                      layer_id,
+#                      LLM,
+#                      Ntokens,
+#                      ):
+#   start = time()
+#   for batch_id in range(N_batches):
+#     a_filename = f'{act_outputfolder}b{batch_id}_l{layer_id}.pt'
+#     if batch_id == 0:
+#       a = torch.load(a_filename,map_location=torch.device('cpu'))
+#     else:
+#       a = torch.cat((a,
+#                     torch.load(a_filename,map_location=torch.device('cpu')))
+#                     )
+#   a = a[:,-Ntokens:,:] # in case we want to retain only Ntokens
+#   print(f'importing took {(time()-start)/60:.1f} m')
+#   print(f'{a.shape=}')
+#   return a
+
+def get_a_filename(act_outputfolder,batch_id,layer_id):
+  return f'{act_outputfolder}b{batch_id}_l{layer_id}.pt'
+
 def load_activations(N_batches,
                      act_outputfolder,
                      layer_id,
-                     LLM,
-                     Ntokens,
+                     sub_length,
                      ):
   start = time()
-  for batch_id in range(N_batches):
-    a_filename = f'{act_outputfolder}b{batch_id}_l{layer_id}.pt'
-    if batch_id == 0:
-      a = torch.load(a_filename,map_location=torch.device('cpu'))
-    else:
-      a = torch.cat((a,
-                    torch.load(a_filename,map_location=torch.device('cpu')))
-                    )
-  a = a[:,-Ntokens:,:] # in case we want to retain only Ntokens
+  ### prealocated memory works extremely better than loading and concatenating in a loop.
+  batch_id = 0
+  a_filename = get_a_filename(act_outputfolder,batch_id,layer_id)
+  first_batch = torch.load(a_filename,
+                           map_location=torch.device('cpu'),
+                           weights_only=False)[:,:sub_length,:]
+  batch_size = first_batch.shape[0]
+  emb_dim = first_batch.shape[-1]
+  a = torch.empty(size=(N_batches*batch_size,sub_length,emb_dim), 
+                  dtype=first_batch.dtype,
+                  device='cpu')
+  a[:batch_size,:,:] = first_batch
+
+  for batch_id in range(1,N_batches):
+    a_filename = get_a_filename(act_outputfolder,batch_id,layer_id)
+    a[batch_id*batch_size:(batch_id+1)*batch_size,:,:] = torch.load(a_filename,
+                                                                    map_location=torch.device('cpu'),
+                                                                    weights_only=False)[:,:sub_length,:]
+  
   print(f'importing took {(time()-start)/60:.1f} m')
   print(f'{a.shape=}')
   return a
